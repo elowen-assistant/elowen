@@ -407,9 +407,12 @@ Delivered in current state:
 - local Compose validates the primary device registration and probe path end to end
 
 ### Slice 3 - Job Creation and Dispatch
+Status:
+- completed on 2026-03-22
+
 Outcome:
 - A coding request from a thread becomes a tracked job
-- The orchestrator routes the job to the registered edge device over JetStream
+- The orchestrator routes the job to the registered edge device over NATS
 
 Sub-projects:
 - `elowen-api`
@@ -423,6 +426,13 @@ Primary capabilities:
 - job status model
 - dispatch messages
 - job cards in the UI
+
+Delivered in current state:
+- `elowen-api` creates jobs from thread context, persists `jobs` and `job_events`, probes the selected device, and dispatches the job over NATS
+- `elowen-edge` subscribes to per-device job dispatch subjects and acknowledges the current dispatch path by logging received work
+- `elowen-ui` shows thread-linked job cards and exposes a create-job form from the thread detail view
+- `elowen-platform/contracts` includes expanded job payloads for create, list, detail, and event surfaces
+- local Compose validates the end-to-end path from thread to persisted dispatched job on the primary device
 
 ### Slice 4 - Local Execution Loop
 Outcome:
@@ -503,7 +513,7 @@ Primary capabilities:
 ## 11. First End-to-End Slice Definition
 
 Target slice:
-- `Slice 3 - Job Creation and Dispatch`, extended through the minimum execution loop from `Slice 4`
+- `Slice 4 - Local Execution Loop`, extended through the minimum completion path from `Slice 5`
 
 Definition of done:
 
@@ -623,12 +633,12 @@ Definition of done:
 
 ## 19. Next Deliverable
 
-Implement `Slice 3 - Job Creation and Dispatch`.
+Implement `Slice 4 - Local Execution Loop`.
 
 Primary outputs:
 
-- job creation from thread context in `elowen-api`
-- job records and lifecycle persistence in Postgres
-- dispatch contracts and NATS subjects for edge delivery
-- a minimal jobs surface in the UI
-- Compose-validated dispatch from the orchestrator toward the registered primary device
+- edge-side job acceptance and active lease management
+- worktree creation for a dispatched job
+- Codex invocation from the edge agent
+- job lifecycle event publishing and persistence beyond dispatch
+- UI visibility into live execution state for a running job
