@@ -1,0 +1,35 @@
+# Cross-Repo Change Rules
+
+Use these rules whenever one user task touches more than one Elowen repository.
+
+## Ownership
+
+- Put code in the repository that owns the behavior.
+- Put interface agreements in the repository that owns the contract surface, or in `elowen-platform` if shared.
+- Put process documentation in `elowen-workspace`.
+
+## Ordering
+
+When possible, make cross-repo changes in this order:
+
+1. update shared contracts or platform drafts
+2. update the backend or service owner of the behavior
+3. update dependent services or UI
+4. update workspace docs and submodule pointers
+
+## Commits
+
+- Keep commits scoped to one repository.
+- Do not mix child repo code changes into the workspace meta-repo commit.
+- The workspace commit should usually only move submodule pointers and update workspace-level docs.
+
+## Validation
+
+- Validate each changed child repository on its own.
+- Then validate the integrated workspace state from `elowen-workspace`.
+- If Compose or multi-service behavior changes, verify it from the workspace root.
+
+## Release Intent
+
+- Child repositories should be releasable independently.
+- The workspace repository can tag integrated snapshots of known-good child versions.

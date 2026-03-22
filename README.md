@@ -11,6 +11,7 @@ This folder is the umbrella workspace for Elowen, a personal cloud AI-assistant 
 - `elowen-edge/` - local edge agent for Codex execution
 - `elowen-notes/` - versioned notes document service
 - `elowen-platform/` - shared deployment assets, contracts, schemas, and docs
+- `codex/` - workspace-level Codex instructions, playbooks, and shared skills
 
 `roadmap.md` remains the source of truth for the product and architecture direction. This scaffold aligns to the first deliverables called out there:
 
@@ -37,3 +38,5 @@ git submodule update --init --recursive
 ## Working Convention
 
 Each top-level service directory is its own repository with independent history and releases. `elowen-platform` is the shared orchestration/deployment repo for cross-cutting assets. `elowen-workspace` pins known-good revisions of the child repositories.
+
+Workspace-level Codex guidance lives under `codex/` and should be updated as new cross-repo conventions emerge.
