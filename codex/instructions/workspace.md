@@ -28,8 +28,8 @@ These instructions apply across the Elowen workspace unless a service repository
 - Slice 6 is complete.
 - Slice 7 is complete.
 - Slice 8 is complete.
-- Slice 9 is the next planned slice.
-- Slice 10 is planned after Slice 9.
+- Slice 9 is complete.
+- Slice 10 is the next planned slice.
 - Slice 11 is planned after Slice 10.
 - Notes are modeled in ArangoDB using document collections, edge collections, and ArangoSearch.
 - Notes service contracts should remain portable enough to support a future MongoDB migration if needed.
@@ -50,6 +50,8 @@ These instructions apply across the Elowen workspace unless a service repository
 - Slice 7 enables structured JSON logs through `ELOWEN_LOG_FORMAT=json` in the Rust services.
 - Slice 7 platform docs live in `elowen-platform/docs/operations.md`, and the Kubernetes migration base lives in `elowen-platform/k8s/base`.
 - Slice 8 adds a lightweight global jobs list in the UI that can select the owning thread and job detail from any thread context.
+- Slice 9 runs repo-owned build/test commands from `.assistant/config.toml` after Codex execution and persists the results into the job execution report.
+- After slices 10 and 11, review and define the direct interaction model for thread messages versus job-driven execution.
 
 ## Git Model
 

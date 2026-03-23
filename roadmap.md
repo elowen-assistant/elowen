@@ -568,7 +568,7 @@ Delivered in current state:
 
 ### Slice 9 - Build and Test Execution
 Status:
-- pending
+- completed on 2026-03-23
 
 Outcome:
 - Execution reports reflect real project build and test results instead of scaffold placeholders
@@ -583,6 +583,12 @@ Primary capabilities:
 - repo-aware build/test command execution
 - structured build/test result capture
 - surfaced build/test output in job detail
+
+Delivered in current state:
+- `elowen-edge` now loads repo-owned validation commands from `.assistant/config.toml`, with a Cargo fallback when no explicit config is present
+- build and test commands now run after Codex execution and are captured in the persisted execution report
+- validation failures now mark jobs as failed and suppress push approval requests
+- service repositories now include explicit validation config for local edge execution
 
 ### Slice 10 - Edge Sandbox Enforcement
 Status:
@@ -624,7 +630,7 @@ Primary capabilities:
 ## 11. First End-to-End Slice Definition
 
 Target slice:
-- `Slice 8 - Global Jobs Surface`
+- `Slice 9 - Build and Test Execution`
 
 Definition of done:
 
@@ -748,9 +754,12 @@ Definition of done:
 
 ## 19. Next Deliverable
 
-Slice set `0` through `8` is now complete.
+Slice set `0` through `9` is now complete.
 
 Primary outputs:
-- lightweight global jobs list in the UI
-- direct job-to-thread navigation from the global jobs surface
-- explicit follow-on slices for build/test execution, sandbox enforcement, and notes revision lineage
+- repo-owned build/test command execution through `.assistant/config.toml`
+- real build/test results in persisted job execution reports
+- explicit follow-on slices for sandbox enforcement and notes revision lineage
+
+Reminder after slices `10` and `11`:
+- review and define the direct interaction model for thread messages versus job-driven execution, including whether Elowen should auto-reply in-thread without an explicit job
