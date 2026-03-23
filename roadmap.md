@@ -464,6 +464,9 @@ Delivered in current state:
 - the default execution wrapper is simulated, with an explicit configuration path for a future external Codex command
 
 ### Slice 5 - Results, Summaries, and Approval Gate
+Status:
+- completed on 2026-03-22
+
 Outcome:
 - Completed jobs include execution result, test outcome, and summary
 - Push remains manual and must pass through an explicit approval step
@@ -643,12 +646,11 @@ Definition of done:
 
 ## 19. Next Deliverable
 
-Implement `Slice 5 - Results, Summaries, and Approval Gate`.
+Implement `Slice 6 - Notes Promotion and Retrieval`.
 
 Primary outputs:
 
-- execution result and failure classification surfaces
-- generated job summaries and result metadata
-- approval request and resolution persistence
-- inline approval controls in the UI
-- a Compose-validated post-execution result and approval path
+- note retrieval against the canonical notes service
+- note promotion from thread/job context into ArangoDB-backed notes
+- note references surfaced back into thread and job workflows
+- a Compose-validated notes retrieval and promotion path

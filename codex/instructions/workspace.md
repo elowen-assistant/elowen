@@ -24,7 +24,8 @@ These instructions apply across the Elowen workspace unless a service repository
 - Slice 2 is complete.
 - Slice 3 is complete.
 - Slice 4 is complete.
-- Slice 5 is the active next slice.
+- Slice 5 is complete.
+- Slice 6 is the active next slice.
 - Notes are modeled in ArangoDB using document collections, edge collections, and ArangoSearch.
 - Notes service contracts should remain portable enough to support a future MongoDB migration if needed.
 - Local Windows Rust validation may require loading `vcvars64.bat` before `cargo check`.
@@ -34,6 +35,9 @@ These instructions apply across the Elowen workspace unless a service repository
 - Job lifecycle events currently use NATS publish-subscribe on `elowen.jobs.events`.
 - The edge runtime now creates mounted git worktrees under `/workspace/.elowen/worktrees` in Compose.
 - The Slice 4 execution wrapper defaults to a simulated runner until an external Codex command is configured.
+- The UI is served as a static production build behind nginx in Compose, not `trunk serve`.
+- Slice 5 persists execution reports, generated job summaries, and push approvals in the API database.
+- Slice 5 approval resolution is API-driven and surfaced inline in the UI job detail view.
 
 ## Git Model
 
