@@ -15,6 +15,7 @@ Keep service-specific guidance in the owning repository. Keep cross-repo guidanc
 
 - `instructions/` - shared rules and operating guidance
 - `playbooks/` - step-by-step workflows for recurring tasks
+- `notes/` - dated session handoff notes and restart context
 - `skills/` - workspace-level skills or skill drafts
 
 ## Maintenance Rule
