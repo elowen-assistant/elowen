@@ -485,6 +485,9 @@ Primary capabilities:
 - inline approval UI
 
 ### Slice 6 - Notes Promotion and Retrieval
+Status:
+- completed on 2026-03-22
+
 Outcome:
 - Threads and jobs can retrieve relevant notes
 - Selected knowledge can be promoted into the notes system with versioning
@@ -497,10 +500,18 @@ Sub-projects:
 - `elowen-platform/db`
 
 Primary capabilities:
+- responsive and interactive workspace shell correction for thread/job flows
 - note create/read/query APIs
 - note references from threads and jobs
 - promotion into an ArangoDB document + graph model with revision tracking
 - filtered retrieval for future RAG/context use
+
+Delivered in current state:
+- `elowen-notes` exposes note search, note detail, and note promotion APIs backed by ArangoDB collections and revision documents
+- `elowen-api` enriches thread and job detail with related notes, and can promote job summaries into notes while keeping the notes boundary inside `elowen-notes`
+- `elowen-ui` restores a responsive interactive shell, shows related notes in thread and job detail, and exposes a job-summary promotion action
+- promoted job notes are now visible from both the owning job and the parent thread
+- local Compose validates note promotion and retrieval without reintroducing the old Trunk overlay failure mode
 
 ### Slice 7 - Hardening and Platform Maturity
 Outcome:
@@ -526,7 +537,7 @@ Primary capabilities:
 ## 11. First End-to-End Slice Definition
 
 Target slice:
-- `Slice 5 - Results, Summaries, and Approval Gate`
+- `Slice 6 - Notes Promotion and Retrieval`
 
 Definition of done:
 

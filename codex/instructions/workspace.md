@@ -25,7 +25,8 @@ These instructions apply across the Elowen workspace unless a service repository
 - Slice 3 is complete.
 - Slice 4 is complete.
 - Slice 5 is complete.
-- Slice 6 is the active next slice.
+- Slice 6 is complete.
+- Slice 7 is the active next slice.
 - Notes are modeled in ArangoDB using document collections, edge collections, and ArangoSearch.
 - Notes service contracts should remain portable enough to support a future MongoDB migration if needed.
 - Local Windows Rust validation may require loading `vcvars64.bat` before `cargo check`.
@@ -38,6 +39,9 @@ These instructions apply across the Elowen workspace unless a service repository
 - The UI is served as a static production build behind nginx in Compose, not `trunk serve`.
 - Slice 5 persists execution reports, generated job summaries, and push approvals in the API database.
 - Slice 5 approval resolution is API-driven and surfaced inline in the UI job detail view.
+- Slice 6 keeps note creation, revisioning, and retrieval inside `elowen-notes`, with `elowen-api` consuming that service over HTTP.
+- Slice 6 related-note retrieval for a thread includes notes promoted from jobs that belong to that thread.
+- Slice 6 includes an explicit responsive/interactivity correction for the UI shell so thread/job workflows remain usable in the containerized deployment.
 
 ## Git Model
 
