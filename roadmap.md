@@ -704,7 +704,7 @@ Delivered notes:
 
 ### Slice 14 - Real Codex Execution Path
 Status:
-- pending
+- complete
 
 Outcome:
 - A dispatched job runs through a supported external Codex command as the primary validated execution path
@@ -719,6 +719,12 @@ Primary capabilities:
 - preflight checks for Codex availability
 - execution log capture for the real runner path
 - documented local setup for the laptop agent host
+
+Delivered notes:
+- `elowen-edge` now treats the Codex CLI as a supported execution path rather than a generic opaque wrapper command
+- the edge performs a startup preflight against the configured Codex CLI and validates the extra argument contract
+- dispatched jobs pass the generated request file into `codex exec`, capture JSONL runner output plus the final assistant message, and persist those artifacts in the worktree
+- the real runner path has been validated end to end against the deployed VPS orchestrator with a successful remote Codex-executed job
 
 ### Slice 15 - Chat-To-Job Bridging
 Status:
@@ -912,14 +918,13 @@ Current delivered baseline:
 - local Compose stack for the orchestrator topology
 - VPS-hosted orchestrator deployment over HTTPS
 - standalone laptop edge runtime with env-file based startup and documented Windows launch/install helpers
+- real Codex CLI execution path with startup preflight and persisted runner artifacts
 - persisted threads, messages, jobs, approvals, notes, and job events
 - device registration, probing, dispatch, worktree creation, lifecycle events, summaries, and validation reporting
 - manual job creation from a thread and UI visibility into execution progress
-- optional external Codex integration path behind explicit edge configuration
 
 True MVP critical path from here:
 - `Slice 10 - Edge Sandbox Enforcement`
-- `Slice 14 - Real Codex Execution Path`
 - `Slice 15 - Chat-To-Job Bridging`
 - `Slice 16 - In-Thread Assistant Completion Replies`
 
