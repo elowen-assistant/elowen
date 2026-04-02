@@ -680,7 +680,7 @@ Primary capabilities:
 
 ### Slice 13 - Standalone Laptop Edge Install
 Status:
-- pending
+- complete
 
 Outcome:
 - The edge agent can be installed on a laptop and connected to the remote orchestrator without relying on the shared local Compose topology
@@ -696,6 +696,11 @@ Primary capabilities:
 - service or foreground run instructions
 - remote API and NATS connectivity
 - device registration validation against the remote orchestrator
+
+Delivered notes:
+- `elowen-edge` now supports `--env-file` and `ELOWEN_EDGE_ENV_FILE` so laptop runtime configuration no longer depends on reconstructing a long shell command by hand
+- the Windows host path now has checked-in startup helpers for foreground launch, detached launch, and Startup-folder installation
+- the standalone wrapper flow has been validated end to end against the deployed VPS orchestrator with remote device registration and successful job execution
 
 ### Slice 14 - Real Codex Execution Path
 Status:
@@ -905,6 +910,8 @@ Slice set `0` through `9` is complete for the local job-driven system, but the t
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
+- VPS-hosted orchestrator deployment over HTTPS
+- standalone laptop edge runtime with env-file based startup and documented Windows launch/install helpers
 - persisted threads, messages, jobs, approvals, notes, and job events
 - device registration, probing, dispatch, worktree creation, lifecycle events, summaries, and validation reporting
 - manual job creation from a thread and UI visibility into execution progress
@@ -912,8 +919,6 @@ Current delivered baseline:
 
 True MVP critical path from here:
 - `Slice 10 - Edge Sandbox Enforcement`
-- `Slice 12 - VPS Orchestrator Deployment`
-- `Slice 13 - Standalone Laptop Edge Install`
 - `Slice 14 - Real Codex Execution Path`
 - `Slice 15 - Chat-To-Job Bridging`
 - `Slice 16 - In-Thread Assistant Completion Replies`
