@@ -20,7 +20,7 @@ The system should support:
 - isolated git worktrees per job
 - structured summaries
 - controlled approvals
-- future expansion to notes/RAG, more tools, and Kubernetes
+- post-MVP expansion areas tracked in `Future Enhancements`
 
 ---
 
@@ -494,7 +494,7 @@ Delivered in current state:
 - `elowen-edge` publishes lifecycle events over NATS for acceptance, worktree creation, start, completion, and failure
 - `elowen-api` consumes job lifecycle events, persists them to `job_events`, and advances the `jobs` status model beyond dispatch
 - `elowen-ui` now polls and displays a job detail pane with the persisted event stream for the selected thread job
-- the default execution wrapper is simulated, with an explicit configuration path for a future external Codex command
+- the default execution wrapper is simulated, with an explicit configuration path for an external Codex command
 
 ### Slice 5 - Results, Summaries, and Approval Gate
 Status:
@@ -537,7 +537,7 @@ Primary capabilities:
 - note create/read/query APIs
 - note references from threads and jobs
 - promotion into an ArangoDB document + graph model with revision tracking
-- filtered retrieval for future RAG/context use
+- filtered retrieval primitives for note and context lookup
 
 Delivered in current state:
 - `elowen-notes` exposes note search, note detail, and note promotion APIs backed by ArangoDB collections and revision documents
@@ -858,7 +858,7 @@ Definition of done:
 - job cards
 - approvals
 - job detail page
-- future MVP path: thread-native execution replies
+- MVP path: thread-native execution replies
 
 ---
 
@@ -925,3 +925,29 @@ True MVP critical path from here:
 
 Important note:
 - `Slice 11 - Notes Revision Lineage` remains valuable, but it is not on the critical path to the true MVP defined above.
+
+---
+
+## 21. Future Enhancements
+
+This section is the backlog for intended future work that is not on the current true-MVP critical path and is not already assigned to an active slice.
+
+### Candidate backlog
+
+- Windows service-grade laptop startup path
+  - Current state: Slice 13 ships a working env-file runtime plus Windows wrapper and Startup-folder launcher.
+  - Gap: Task Scheduler registration can fail on some machines with local permission or policy issues, so the current auto-start story is session-bound rather than service-grade.
+  - Why it matters later: a stronger Windows startup path would improve reliability, reduce dependence on interactive logon, and make the laptop edge easier to operate in stricter environments.
+  - Suggested future direction: investigate a more durable Windows service model or a hardened scheduled-task path after the true MVP slices are complete.
+- Notes and RAG expansion
+  - Current state: notes promotion, revisioned note storage, graph links, and filtered retrieval are in place.
+  - Gap: the system does not yet use richer retrieval, ranking, or generated context assembly as a first-class assistant capability.
+  - Why it matters later: this is the natural path from durable note storage toward stronger memory and context injection.
+- Additional tools and integrations
+  - Current state: the coding path is the primary supported execution model.
+  - Gap: broader non-coding tool surfaces and integrations are not yet part of the product flow.
+  - Why it matters later: expanding the tool surface is part of turning the assistant from a coding orchestrator into a broader personal assistant platform.
+- Kubernetes deployment path
+  - Current state: the architecture keeps a Compose-first approach and an explicit upgrade path, but the working deployment is still Compose-based.
+  - Gap: there is no validated Kubernetes deployment story for the current real system.
+  - Why it matters later: Kubernetes is a scale and operability enhancement, not part of the true MVP path.
