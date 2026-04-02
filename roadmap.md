@@ -329,17 +329,17 @@ Document collections:
 
 ## 10. Vertical Slice Roadmap
 
-### Current real delivery status as of 2026-04-01
+### Current verified delivery status as of 2026-04-02
 
-- The local job-driven execution loop is implemented through Slice 9 and the Rust service repos currently pass `cargo check`.
-- The current product works as a thread plus jobs system, not yet as a chat-native assistant.
-- `elowen-ui` supports threads, manual job creation, job monitoring, approvals, and notes.
-- `elowen-api` persists threads, messages, jobs, job events, approvals, and device state, and routes jobs over NATS.
-- `elowen-edge` registers, answers availability probes, creates worktrees, runs the execution wrapper, runs validation, and publishes lifecycle events.
-- The default edge execution path is still simulated unless an external Codex command is configured explicitly.
-- Compose is the only validated deployment path today. The Kubernetes assets are migration scaffolding, not production-ready operations.
-- Thread messages currently persist only. They do not yet trigger job creation, dispatch, or assistant replies in-thread.
-- Edge sandbox enforcement is still pending, so execution safety still relies primarily on repo allowlists and worktree isolation.
+- Slice set `0` through `9` and `12` through `16` is implemented on `main`.
+- The current product now behaves as a thread-native assistant surface backed by jobs, not only as a manual job console.
+- `elowen-ui` provides thread chat, chat-dispatch routing fields, global jobs, job detail, approvals, and notes, while keeping the manual job form only as an advanced fallback.
+- `elowen-api` persists user, system, and assistant thread messages; exposes `/api/v1/threads/{thread_id}/chat-dispatch`; creates linked jobs from chat requests; and posts assistant lifecycle replies back into the owning thread.
+- `elowen-edge` registers the device, creates per-job git worktrees, supports a real `codex exec` runner with startup preflight and captured runner artifacts, runs repo-owned validation from `.assistant/config.toml`, and publishes lifecycle events plus approval gating.
+- `elowen-platform` documents both the VPS deployment path and the standalone laptop edge path, including same-origin HTTPS routing for the UI/API split and Windows startup helpers for the laptop runtime.
+- The VPS-to-laptop flow has been validated as the current user-visible baseline, while `elowen-platform/k8s/base` remains migration scaffolding rather than a production deployment target.
+- The true-MVP-critical gap is now concentrated in `Slice 10 - Edge Sandbox Enforcement`.
+- `Slice 11 - Notes Revision Lineage` is still pending, but it is no longer on the critical path to the true MVP.
 
 ### True MVP definition
 
@@ -355,12 +355,10 @@ Elowen reaches the true MVP only when the following end-to-end path works reliab
 
 ### Gap between current delivery and the true MVP
 
-- Interaction gap: the current UX is still manual and job-driven. Posting a thread message does not trigger work.
-- Execution gap: real external Codex execution is configurable, but it is not yet the default validated runtime path.
-- Deployment gap: the orchestrator stack is validated locally with Compose, but not yet documented and hardened as a VPS deployment.
-- Device gap: the edge agent runs well in the shared local workspace/container model, but not yet as a documented standalone laptop install.
-- Reporting gap: completion is visible in job detail and approvals, but not yet reflected back into the thread as an assistant reply.
-- Safety gap: sandbox enforcement is still pending and remains on the MVP-critical path.
+- Safety gap: `Slice 10 - Edge Sandbox Enforcement` remains the only MVP-critical blocker.
+- Today the edge runtime still relies on repo allowlists, configured workspace/worktree roots, and Codex-argument validation rather than a stronger runtime sandbox around filesystem access and spawned commands.
+- `Slice 11 - Notes Revision Lineage` remains pending for richer note ancestry and authorship, but it does not block the true MVP path.
+- Kubernetes migration assets are still intentionally non-MVP scaffolding and are not part of the release bar for the true MVP defined here.
 
 ### Slice 0 - Workspace and Runtime Foundation
 Status:
@@ -640,6 +638,11 @@ Primary capabilities:
 - runtime command and filesystem boundary enforcement
 - auditable sandbox failures in job events and logs
 
+Current partial state:
+- `elowen-edge` already constrains work to allowed repos, configured workspace/worktree roots, and per-job git worktrees
+- the real Codex path validates and normalizes configured Codex CLI arguments before invocation
+- validation commands still execute as ordinary child processes from the worktree without a stronger sandbox boundary or dedicated sandbox-failure event type
+
 ### Slice 11 - Notes Revision Lineage
 Status:
 - pending
@@ -657,6 +660,11 @@ Primary capabilities:
 - revision ancestry with `previous_revision_id`
 - explicit source references
 - authored-by metadata on note revisions
+
+Current partial state:
+- `elowen-notes` already stores note revisions and exposes `current_revision_id`, `version`, `source_kind`, and `source_id`
+- promoted notes already preserve a current revision document and source linkage for job-derived content
+- explicit revision ancestry, richer source-reference structure, and authored-by revision metadata are not yet modeled
 
 ### Slice 12 - VPS Orchestrator Deployment
 Status:
