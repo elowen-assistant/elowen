@@ -1197,6 +1197,7 @@ Design constraints:
   - Why it matters later: for a chat-first product, the thread itself should carry the clearest final answer, especially when the runner's last message is the most useful high-signal explanation of what happened.
   - Suggested future direction: when a job completes, render the final `last_message` directly into the thread transcript with clear visual treatment as the job's outcome message, while keeping deeper execution reports and summaries available as secondary detail.
   - UX note: completion replies currently include too much operational ceremony inline. For example, a read-only result like "The Cargo package name is `elowen-api`..." should be the default chat-visible artifact, while branch/build/test/change-count/no-push detail should be hidden behind a `More Details` disclosure by default.
+  - Future note: differentiate thread-visible `Job Update` messages from `Job Complete` messages so interstitial lifecycle chatter can stay visually secondary while final outcome messages get stronger treatment and cleaner defaults.
 - Kubernetes deployment path
   - Current state: the architecture keeps a Compose-first approach and an explicit upgrade path, but the working deployment is still Compose-based.
   - Gap: there is no validated Kubernetes deployment story for the current real system.
