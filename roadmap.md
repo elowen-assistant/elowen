@@ -1094,7 +1094,7 @@ Definition of done:
 
 ## 20. Next Deliverable
 
-Slice set `0` through `24` is complete, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, and the first full chat-forward UI redesign pass.
+Slice set `0` through `25` is complete, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, and a real web UI authentication boundary.
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
@@ -1109,17 +1109,16 @@ True MVP critical path from here:
 - no remaining slice-level blockers
 
 Post-MVP slice plan from here:
-- `Slice 25 - Web UI Authentication`
 - `Slice 26 - Parent-Directory Repository Discovery`
 - `Slice 27 - Material 3 System Alignment`
 
 Immediate next deliverable:
-- `Slice 25 - Web UI Authentication`
+- `Slice 26 - Parent-Directory Repository Discovery`
 
-Immediate hardening focus inside Slice 25:
-- add a real authenticated session boundary around the deployed web UI
-- keep thread/chat as the primary surface while constraining who can browse, dispatch, approve, and promote notes
-- establish a clean foundation for future authorization rules without disturbing the current single-operator flow
+Immediate hardening focus inside Slice 26:
+- let the edge advertise one or more trusted parent directories instead of only a fixed repo allowlist
+- discover nested git repositories under those roots without relying on typo-prone manual repo entry
+- preserve explicit policy overlays for exceptions where a discovered repo should stay hidden or restricted
 
 Important note:
 - `Workflow #2` baseline is now live through `Slice 21`
@@ -1179,10 +1178,10 @@ Design constraints:
   - Suggested future direction: let devices register trusted repository-root directories, discover nested repositories under those roots, and keep per-repo policy overlays for exceptions when tighter control is needed.
 - Web UI authentication
   - Assigned slice: `Slice 25 - Web UI Authentication`
-  - Current state: the deployed web UI assumes a trusted operator environment and does not enforce a real user authentication boundary.
-  - Gap: there is no login, session management, or user-level access control protecting the thread, job, notes, and approval surfaces.
-  - Why it matters later: once Elowen is exposed beyond a single trusted operator on a private deployment, the UI needs an explicit identity boundary before it can be treated as a real multi-user or internet-exposed product surface.
-  - Suggested future direction: add a simple authenticated web session model first, then layer authorization rules for operational actions like dispatch, approval, notes promotion, and device management.
+  - Current state: the shipped VPS stack now supports a real password-gated web session boundary backed by API-issued cookies and server-side session storage.
+  - Remaining gap: the current model is still intentionally simple and does not yet distinguish between operators, permission levels, or external identity providers.
+  - Why it matters later: the basic session wall is enough for a private operator deployment, but multi-user or internet-exposed operation still needs authorization and stronger identity management.
+  - Suggested future direction: build on the current session layer with per-action authorization, better operator identity handling, and eventually external auth if the deployment model expands.
 - Chat-forward UI redesign
   - Assigned slice: `Slice 24 - Chat-Forward UI Redesign`
   - Current state: the shipped UI now centers the thread/chat view, keeps the composer sticky and primary, moves secondary controls into folded context panels, trims job-completion noise behind a disclosure, and now includes a light Material 3-inspired pass for surfaces, controls, and visual hierarchy.
