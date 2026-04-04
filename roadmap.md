@@ -1088,6 +1088,7 @@ Definition of done:
 25. `Slice 24 - Chat-Forward UI Redesign`
 26. `Slice 25 - Web UI Authentication`
 27. `Slice 26 - Parent-Directory Repository Discovery`
+28. `Slice 27 - Material 3 System Alignment`
 
 ---
 
@@ -1110,6 +1111,7 @@ True MVP critical path from here:
 Post-MVP slice plan from here:
 - `Slice 25 - Web UI Authentication`
 - `Slice 26 - Parent-Directory Repository Discovery`
+- `Slice 27 - Material 3 System Alignment`
 
 Immediate next deliverable:
 - `Slice 25 - Web UI Authentication`
@@ -1183,12 +1185,18 @@ Design constraints:
   - Suggested future direction: add a simple authenticated web session model first, then layer authorization rules for operational actions like dispatch, approval, notes promotion, and device management.
 - Chat-forward UI redesign
   - Assigned slice: `Slice 24 - Chat-Forward UI Redesign`
-  - Current state: the shipped UI now centers the thread/chat view, keeps the composer sticky and primary, moves secondary controls into folded context panels, and trims job-completion noise behind a disclosure.
-  - Remaining gap: the redesign still has follow-on polish opportunities around richer message-type differentiation, repository selection ergonomics, and a cleaner split between the primary chat surface and deeper operational browsing.
+  - Current state: the shipped UI now centers the thread/chat view, keeps the composer sticky and primary, moves secondary controls into folded context panels, trims job-completion noise behind a disclosure, and now includes a light Material 3-inspired pass for surfaces, controls, and visual hierarchy.
+  - Remaining gap: the redesign still has follow-on polish opportunities around richer message-type differentiation, repository selection ergonomics, a cleaner split between the primary chat surface and deeper operational browsing, and a true design-system-level Material alignment.
   - Why it matters later: Workflow #2 is now the preferred default path, so future UI work should keep making Elowen feel like a high-quality messaging app while preserving deliberate access to operational tools.
-  - Suggested future direction: continue iterating on the generic messaging-app shell inspired by ChatGPT, Claude, and Google Messages, with stronger progressive disclosure, clearer completion/update semantics, and refined mobile ergonomics.
+  - Suggested future direction: continue iterating on the generic messaging-app shell inspired by ChatGPT, Claude, and Google Messages, with stronger progressive disclosure, clearer completion/update semantics, refined mobile ergonomics, and only a light Material 3 borrowing inside this slice.
   - Future note: repository selection in dispatch controls should become a select or searchable picker fed from orchestrator-known edge repositories, not a free-form text box that risks typos.
   - Future note: the dedicated job browsing surface should likely become a separate screen from the primary chat/thread experience, so users who want to search and inspect jobs can do so without turning the main assistant view into a jobs console.
+- Material 3 system alignment
+  - Assigned slice: `Slice 27 - Material 3 System Alignment`
+  - Current state: Slice 24 now borrows a few Material 3 cues for surface color, control treatment, and hierarchy, but the UI is still fundamentally a custom design.
+  - Gap: the app does not yet follow a full Material 3 token system, adaptive navigation model, component semantics, or motion/elevation guidance consistently.
+  - Why it matters later: a dedicated alignment pass would make the UI more coherent across desktop/mobile states and reduce ad hoc styling drift as the product grows.
+  - Suggested future direction: adopt a proper Material 3 design token layer, component mapping, adaptive navigation behavior, and edge-to-edge/mobile conventions in a dedicated slice instead of continuing to fold those structural changes into general UI cleanup.
 - Thread-visible final job result message
   - Assigned slice: `Slice 23 - Thread-Visible Final Job Result Message`
   - Current state: the thread shows lifecycle milestones and summary-oriented assistant replies, but it does not reliably surface the final runner `last_message` as the primary completion artifact in chat.
