@@ -1198,6 +1198,7 @@ Design constraints:
   - Gap: the app does not yet follow a full Material 3 token system, adaptive navigation model, component semantics, or motion/elevation guidance consistently.
   - Why it matters later: a dedicated alignment pass would make the UI more coherent across desktop/mobile states and reduce ad hoc styling drift as the product grows.
   - Suggested future direction: adopt a proper Material 3 design token layer, component mapping, adaptive navigation behavior, and edge-to-edge/mobile conventions in a dedicated slice instead of continuing to fold those structural changes into general UI cleanup.
+  - Future note: move the UI toward true SPA-style client persistence instead of periodic refresh/poll-driven state replacement, so scroll position, panel open/closed state, selected context, and transcript continuity stop jumping around on refresh.
 - Mutual orchestrator and edge trust
   - Assigned slice: `Slice 28 - Mutual Orchestrator And Edge Trust`
   - Current state: device registration is now more ergonomic, but long-lived machine trust still depends on ambient network trust and application-level assumptions rather than pinned cryptographic identity.
