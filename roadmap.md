@@ -1197,6 +1197,8 @@ Design constraints:
   - Future note: the dedicated job browsing surface should likely become a separate screen from the primary chat/thread experience, so users who want to search and inspect jobs can do so without turning the main assistant view into a jobs console.
   - Future note: deeper operational destinations such as Jobs, Context, and related detail views should become individual single views with explicit back navigation to the associated chat/thread, rather than staying as nested panels inside the chat surface.
   - Future note: the desktop `section.panel.content` must remain constrained to the viewport height so `form.thread-composer` stays accessible without page scrolling; scrolling should happen inside dedicated panes such as `div.message-pane` or the job browser grid.
+  - Future note: user-facing timestamps should use US display formatting, for example `MM/DD/YYYY hh:mm:ss AM/PM`, while internal storage and wire contracts continue using ISO 8601/RFC3339 timestamps.
+  - Future note: pressing `Ctrl+Enter` while focus is in `div.composer-input-wrap > textarea` should submit the current message.
 - Material 3 system alignment
   - Assigned slice: `Slice 27 - Material 3 System Alignment`
   - Current state: Slice 27 shipped the first Material 3-aligned UI shell pass: chat-dominant viewport behavior, Material-style navigation rail, explicit Jobs and Details rail destinations, Material Symbols for the send control, compact mobile details sheet behavior, and tighter desktop/mobile chrome.
