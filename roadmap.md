@@ -1097,7 +1097,7 @@ Definition of done:
 
 ## 20. Next Deliverable
 
-Slice set `0` through `27` is complete, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, and the first Material 3-aligned UI shell pass.
+Slice set `0` through `28` is complete, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, and mutual orchestrator/edge trust for signed edge registration.
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
@@ -1112,17 +1112,16 @@ True MVP critical path from here:
 - no remaining slice-level blockers
 
 Post-MVP slice plan from here:
-- `Slice 28 - Mutual Orchestrator And Edge Trust`
 - `Slice 29 - SPA State Persistence And Realtime Updates`
 - `Slice 30 - UI Browser Automation`
 
 Immediate next deliverable:
-- `Slice 28 - Mutual Orchestrator And Edge Trust`
+- `Slice 29 - SPA State Persistence And Realtime Updates`
 
-Immediate hardening focus inside Slice 28:
-- add opt-in signed edge registration with an orchestrator-signed challenge and an edge-signed registration proof
-- keep registration compatible when trust configuration is absent, then allow enforcement once keys are provisioned
-- document key placement and the rollout path before requiring trusted registration in production
+Immediate hardening focus inside Slice 29:
+- preserve selected thread, selected job, composer text, panel state, and transcript scroll across background updates
+- stop treating polling as a whole-page-style state replacement
+- prepare the UI and API seams for incremental SSE or WebSocket updates after the first persistence pass
 
 Important note:
 - `Workflow #2` baseline is now live through `Slice 21`
@@ -1208,10 +1207,10 @@ Design constraints:
   - Future note: keep the UI client-side rendered for now; SSR is deferred because the current pain is long-running app-state replacement, not initial render quality.
 - Mutual orchestrator and edge trust
   - Assigned slice: `Slice 28 - Mutual Orchestrator And Edge Trust`
-  - Current state: device registration is now more ergonomic, but long-lived machine trust still depends on ambient network trust and application-level assumptions rather than pinned cryptographic identity.
-  - Gap: an edge device cannot yet prove that it belongs to a specific orchestrator, and the orchestrator cannot yet prove that a registering device is one of its trusted enrolled machines.
-  - Why it matters later: a stronger trust model is required if edge registration should feel SSH-like instead of “reachable API plus accepted device id”.
-  - Suggested future direction: give the orchestrator its own long-term keypair, pin the orchestrator public key in edge config, issue or enroll per-edge keypairs, and move registration toward a mutual signed challenge flow over TLS so both sides verify identity before long-lived trust is established.
+  - Current state: signed edge registration is now live. The orchestrator signs registration challenges, the edge verifies a pinned orchestrator public key, the edge signs its registration proof, the API verifies the proof, and unsigned registration is rejected when `ELOWEN_REQUIRE_TRUSTED_EDGE_REGISTRATION=true`.
+  - Remaining gap: this is still a first trust baseline; richer key rotation, revocation, multi-edge enrollment UX, and operator-visible trust management remain future hardening work.
+  - Why it matters later: the shipped baseline turns registration from "reachable API plus accepted device id" into a pinned orchestrator and edge-key proof flow, but key lifecycle management still needs a cleaner operational surface.
+  - Suggested future direction: add key rotation/revocation, visible edge trust status in the UI, and a safer enrollment workflow for adding additional edge devices.
 - SPA state persistence and realtime updates
   - Assigned slice: `Slice 29 - SPA State Persistence And Realtime Updates`
   - Current state: the UI is a client-side Leptos app, but it still relies on periodic polling that can replace selected thread/job state wholesale.
