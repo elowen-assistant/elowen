@@ -1097,7 +1097,7 @@ Definition of done:
 
 ## 20. Next Deliverable
 
-Slice set `0` through `26` is complete, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, and parent-directory repository discovery for edge registration.
+Slice set `0` through `27` is complete, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, and the first Material 3-aligned UI shell pass.
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
@@ -1112,18 +1112,17 @@ True MVP critical path from here:
 - no remaining slice-level blockers
 
 Post-MVP slice plan from here:
-- `Slice 27 - Material 3 System Alignment`
 - `Slice 28 - Mutual Orchestrator And Edge Trust`
 - `Slice 29 - SPA State Persistence And Realtime Updates`
 - `Slice 30 - UI Browser Automation`
 
 Immediate next deliverable:
-- `Slice 27 - Material 3 System Alignment`
+- `Slice 28 - Mutual Orchestrator And Edge Trust`
 
-Immediate hardening focus inside Slice 27:
-- adopt a proper Material 3 token layer instead of the current light visual borrowing
-- align adaptive navigation behavior across desktop, tablet, and mobile breakpoints
-- standardize component semantics, elevation, and motion so future UI changes stop drifting piecemeal
+Immediate hardening focus inside Slice 28:
+- add opt-in signed edge registration with an orchestrator-signed challenge and an edge-signed registration proof
+- keep registration compatible when trust configuration is absent, then allow enforcement once keys are provisioned
+- document key placement and the rollout path before requiring trusted registration in production
 
 Important note:
 - `Workflow #2` baseline is now live through `Slice 21`
@@ -1200,10 +1199,10 @@ Design constraints:
   - Future note: the desktop `section.panel.content` must remain constrained to the viewport height so `form.thread-composer` stays accessible without page scrolling; scrolling should happen inside dedicated panes such as `div.message-pane` or the job browser grid.
 - Material 3 system alignment
   - Assigned slice: `Slice 27 - Material 3 System Alignment`
-  - Current state: Slice 24 now borrows a few Material 3 cues for surface color, control treatment, and hierarchy, but the UI is still fundamentally a custom design.
-  - Gap: the app does not yet follow a full Material 3 token system, adaptive navigation model, component semantics, or motion/elevation guidance consistently.
-  - Why it matters later: a dedicated alignment pass would make the UI more coherent across desktop/mobile states and reduce ad hoc styling drift as the product grows.
-  - Suggested future direction: adopt a proper Material 3 design token layer, component mapping, adaptive navigation behavior, and edge-to-edge/mobile conventions in a dedicated slice instead of continuing to fold those structural changes into general UI cleanup.
+  - Current state: Slice 27 shipped the first Material 3-aligned UI shell pass: chat-dominant viewport behavior, Material-style navigation rail, explicit Jobs and Details rail destinations, Material Symbols for the send control, compact mobile details sheet behavior, and tighter desktop/mobile chrome.
+  - Remaining gap: the UI is still a custom implementation and is not yet a fully compliant Material 3 component system with exhaustive token, state-layer, motion, and edge-to-edge coverage.
+  - Why it matters later: the shipped pass gives Elowen a coherent Material-inspired baseline, while deeper component-system compliance can continue incrementally without blocking the next security slice.
+  - Suggested future direction: continue M3 token/component cleanup opportunistically, but prioritize the next roadmap slice unless a concrete UI regression appears.
   - Future note: keep the UI client-side rendered for now; SSR is deferred because the current pain is long-running app-state replacement, not initial render quality.
 - Mutual orchestrator and edge trust
   - Assigned slice: `Slice 28 - Mutual Orchestrator And Edge Trust`
