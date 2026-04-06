@@ -1197,6 +1197,7 @@ Design constraints:
   - Future note: repository selection in dispatch controls should become a select or searchable picker fed from orchestrator-known edge repositories, not a free-form text box that risks typos.
   - Future note: the dedicated job browsing surface should likely become a separate screen from the primary chat/thread experience, so users who want to search and inspect jobs can do so without turning the main assistant view into a jobs console.
   - Future note: deeper operational destinations such as Jobs, Context, and related detail views should become individual single views with explicit back navigation to the associated chat/thread, rather than staying as nested panels inside the chat surface.
+  - Future note: the desktop `section.panel.content` must remain constrained to the viewport height so `form.thread-composer` stays accessible without page scrolling; scrolling should happen inside dedicated panes such as `div.message-pane` or the job browser grid.
 - Material 3 system alignment
   - Assigned slice: `Slice 27 - Material 3 System Alignment`
   - Current state: Slice 24 now borrows a few Material 3 cues for surface color, control treatment, and hierarchy, but the UI is still fundamentally a custom design.
