@@ -1125,8 +1125,8 @@ Immediate next deliverable:
 
 Immediate hardening focus inside Slice 29:
 - preserve selected thread, selected job, composer text, panel state, and transcript scroll across background updates
-- stop treating polling as a whole-page-style state replacement
-- prepare the UI and API seams for incremental SSE or WebSocket updates after the first persistence pass
+- use the new authenticated SSE baseline as the normal update path
+- keep polling as a slower fallback until browser automation covers realtime behavior
 
 Important note:
 - `Workflow #2` baseline is now live through `Slice 21`
@@ -1218,10 +1218,10 @@ Design constraints:
   - Suggested future direction: add key rotation/revocation, visible edge trust status in the UI, and a safer enrollment workflow for adding additional edge devices.
 - SPA state persistence and realtime updates
   - Assigned slice: `Slice 29 - SPA State Persistence And Realtime Updates`
-  - Current state: the UI is a client-side Leptos app, but it still relies on periodic polling that can replace selected thread/job state wholesale.
-  - Gap: refresh/poll-driven replacement can disturb scroll position, panel open/closed state, selected context, and transcript continuity.
+  - Current state: the UI is a client-side Leptos app with local persistence for selected thread/job/panel/composer state, guarded transcript autoscroll, and an authenticated SSE baseline for thread/job/device update notifications.
+  - Gap: polling still exists as a fallback, and realtime behavior is not yet covered by browser automation.
   - Why it matters later: Elowen now behaves like a chat app, so it needs long-lived app state and incremental updates instead of page-like refresh semantics.
-  - Suggested future direction: keep CSR as the default, preserve selected thread/job/panel/composer/scroll state in the client, and add SSE or WebSocket events from `elowen-api` so new thread and job updates apply incrementally.
+  - Suggested future direction: keep CSR as the default, harden targeted SSE refresh behavior, then remove polling once Slice 30 browser automation covers the critical realtime UI flows.
 - UI browser automation
   - Assigned slice: `Slice 30 - UI Browser Automation`
   - Current state: the UI has Rust unit tests for pure formatting helpers, but no browser automation for real layout, viewport, or tap behavior.
