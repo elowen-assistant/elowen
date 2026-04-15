@@ -24,7 +24,7 @@ When a new cross-repo convention or recurring workflow appears during developmen
 
 ## Current Handoff
 
-As of 2026-04-15, slices `0` through `29` are complete and `Slice 30 - UI Browser Automation` is the next planned slice.
+As of 2026-04-15, slices `0` through `31` are complete on merged `main`.
 
 Current baseline:
 
@@ -33,7 +33,8 @@ Current baseline:
 - The UI is still client-side rendered Leptos, with local state persistence and authenticated SSE updates plus explicit reconnect/backoff recovery.
 - Polling remains only as a slower fallback until browser automation covers realtime behavior.
 - The laptop edge uses parent-directory repository discovery and signed registration proof against a pinned orchestrator key.
+- The chat surface now distinguishes in-flight activity from final results more clearly, with execution-draft cards and localized timestamps.
 
 Next planned step:
 
-- Continue into `Slice 30 - UI Browser Automation`.
+- Continue into `Slice 32 - Identity And Authorization Hardening`.

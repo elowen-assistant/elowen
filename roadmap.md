@@ -331,17 +331,17 @@ Document collections:
 
 ### Current verified delivery status as of 2026-04-15
 
-- Slice set `0` through `29` is implemented on `main`.
+- Slice set `0` through `31` is implemented on `main`.
 - `Slice 29 - SPA State Persistence And Realtime Updates` is complete, preserving selected thread, selected job, composer text, panel state, and transcript scroll across background updates while explicitly managing realtime reconnect/backoff recovery.
 - The completed true-MVP path remains `Workflow #1`: thread-native request -> dispatched laptop job -> assistant reply back into the same thread.
-- The shipped post-MVP baseline now also includes `Workflow #2`: conversational orchestrator replies, explicit handoff into execution, transcript mode visibility, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI updates, web-session authentication, parent-directory repository discovery, Material 3-aligned shell work, and signed edge registration.
+- The shipped post-MVP baseline now also includes `Workflow #2`: conversational orchestrator replies, explicit handoff into execution, transcript mode visibility, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI updates, web-session authentication, parent-directory repository discovery, Material 3-aligned shell work, signed edge registration, and the Slice 31 chat-surface/draft polish pass.
 - `elowen-ui` now behaves as a chat-first authenticated SPA with local state persistence, authenticated SSE updates, global jobs, job detail, approvals, notes, and the manual create-job form retained only as an advanced fallback.
 - `elowen-api` persists user, system, and assistant thread messages; exposes both conversational chat and chat-dispatch routes; creates linked jobs from explicit execution requests; and posts lifecycle and final-result replies back into the owning thread.
 - `elowen-edge` registers the device, creates per-job git worktrees, supports a real `codex exec` runner with startup preflight and captured runner artifacts, enforces the workspace sandbox boundary, supports read-only execution intent, and performs signed registration against a pinned orchestrator key.
 - `elowen-platform` documents both the VPS deployment path and the standalone laptop edge path, including same-origin HTTPS routing, GHCR-prebuilt VPS images, Windows startup helpers, and trusted edge registration.
 - `elowen-notes` preserves note revision ancestry and authorship metadata, while the promoted-note path remains integrated into both job-backed and conversational thread context.
 - The VPS-to-laptop flow has been re-validated as the current user-visible baseline, while `elowen-platform/k8s/base` remains migration scaffolding rather than a production deployment target.
-- There are no remaining slice-level blockers to the true MVP; the active roadmap focus is now browser automation and post-MVP product maturity.
+- There are no remaining slice-level blockers to the true MVP; the active roadmap focus is now identity hardening and post-MVP product maturity.
 
 ### True MVP definition
 
@@ -1340,7 +1340,7 @@ Definition of done:
 
 ## 20. Next Deliverable
 
-Slice set `0` through `28` is complete, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, and mutual orchestrator/edge trust for signed edge registration.
+Slice set `0` through `31` is complete, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, and the Slice 31 chat-surface polish pass.
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
@@ -1358,8 +1358,6 @@ True MVP critical path from here:
 - no remaining slice-level blockers
 
 Post-MVP slice plan from here:
-- `Slice 30 - UI Browser Automation`
-- `Slice 31 - Chat Surface And Draft UX Polish`
 - `Slice 32 - Identity And Authorization Hardening`
 - `Slice 33 - Repository Policy And Selection UX`
 - `Slice 34 - Trust Lifecycle Management`
@@ -1371,7 +1369,7 @@ Post-MVP slice plan from here:
 - `Slice 40 - CI Workflow Maintenance`
 
 Immediate next deliverable:
-- `Slice 31 - Chat Surface And Draft UX Polish`
+- start `Slice 32 - Identity And Authorization Hardening`
 
 Slice 29 closeout:
 - selected thread, selected job, composer text, panel state, and transcript scroll now persist across background updates
@@ -1381,18 +1379,20 @@ Slice 29 closeout:
 
 Stop point as of 2026-04-15:
 - Slice 30 is closed: browser automation coverage, live UAT, child-repo merge, and workspace pointer update are complete
-- production now runs the `elowen-ui` image built from merged `main` at `ghcr.io/elowen-assistant/elowen-ui:sha-bf1baf317d02a0c16936aacc13f2e849cab1f273`
-- the next recommended project step is `Slice 31 - Chat Surface And Draft UX Polish`
+- Slice 31 is closed on merged `main` across `elowen-api`, `elowen-ui`, and `elowen-workspace`
+- Slice 31 validation includes both automated phases plus local manual UAT covering draft presentation, result disclosure, dispatch promotion, timestamp formatting, and keyboard submit behavior
+- production still runs the `elowen-ui` image built from merged `main` at `ghcr.io/elowen-assistant/elowen-ui:sha-bf1baf317d02a0c16936aacc13f2e849cab1f273`
+- the next recommended project step is `Slice 32 - Identity And Authorization Hardening`
 
 Important note:
-- `Workflow #2` baseline and the first post-MVP execution/chat/security/discovery expansion set are now live through `Slice 28`
-- all currently tracked remaining work is now assigned to planned slices `29` through `40`
+- `Workflow #2` baseline and the first post-MVP execution/chat/security/discovery expansion set are now live through `Slice 31`
+- all currently tracked remaining work is now assigned to planned slices `32` through `40`
 
 ---
 
 ## 21. Planned Post-30 Slice Set
 
-This section tracks all remaining outstanding work after the current `Slice 31` focus. Every currently tracked follow-on item is assigned to a planned slice.
+This section tracks all remaining outstanding work after Slice 31 closeout. Every currently tracked follow-on item is assigned to a planned slice.
 
 ### Workflow #2 - Conversational Orchestrator Reply Path
 
@@ -1416,7 +1416,7 @@ Design constraints:
 ### Slice 31 - Chat Surface And Draft UX Polish
 
 Status:
-- planned
+- complete
 
 Assigned scope:
 - stronger differentiation between `Job Update` and `Job Complete` messages

@@ -19,9 +19,10 @@ These instructions apply across the Elowen workspace unless a service repository
 
 ## Current Platform Decisions
 
-- Slices 0 through 29 are complete.
+- Slices 0 through 31 are complete on merged `main`.
 - Slice 29 delivered SPA-style client state persistence plus authenticated SSE updates with explicit reconnect/backoff recovery.
-- Slice 30 is the next planned slice and should add browser automation for UI layout, tap, scroll, auth, and realtime behavior.
+- Slice 30 delivered browser automation coverage for UI layout, tap, scroll, auth, sticky-composer behavior, and realtime transcript updates.
+- Slice 31 closed on 2026-04-15, delivering cleaner execution-draft synthesis, stronger transcript/result differentiation, localized timestamps, and `Ctrl+Enter` / `Cmd+Enter` composer submit on merged `main`.
 - Notes are modeled in ArangoDB using document collections, edge collections, and ArangoSearch.
 - Notes service contracts should remain portable enough to support a future MongoDB migration if needed.
 - Local Windows Rust validation may require loading `vcvars64.bat` before `cargo check`.

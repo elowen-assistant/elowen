@@ -17,7 +17,7 @@ This folder is the umbrella workspace for Elowen, a personal cloud AI-assistant 
 
 ## Current State
 
-As of the current handoff, slices `0` through `29` are complete and `Slice 30 - UI Browser Automation` is the next planned slice.
+As of 2026-04-15, slices `0` through `31` are complete on merged `main`.
 
 The shipped baseline includes:
 
@@ -31,8 +31,9 @@ The shipped baseline includes:
 - approval-backed commit and push execution for mutating jobs
 - a chat-first Leptos UI with web-session authentication
 - authenticated server-sent events for thread, job, and device updates, with explicit reconnect/backoff recovery and slower polling retained as a fallback
+- polished chat transcript/result surfaces and execution-draft handoff cards with local timestamp rendering and keyboard submit affordances
 
-The next planned roadmap slice is `Slice 30 - UI Browser Automation`.
+The next planned roadmap slice is `Slice 32 - Identity And Authorization Hardening`.
 
 ## Clone
 
