@@ -1129,7 +1129,7 @@ Remaining gap:
 
 ### Slice 30 - UI Browser Automation
 Status:
-- planned
+- complete
 
 Outcome:
 - the chat-first product surface has browser-level regression coverage for layout, navigation, auth, and realtime behavior
@@ -1156,6 +1156,14 @@ Planned first-pass coverage:
 - sticky composer placement and message-pane scroll containment
 - realtime UI updates such as `Job Update` versus `Job Complete` presentation
 - browser-driven confidence for eventually retiring the remaining polling fallback
+
+Slice 30 closeout status as of 2026-04-15:
+- `elowen-ui` now ships a deterministic Playwright harness that builds the UI with Trunk and serves it against a same-origin mock API/SSE surface
+- stable auth and backdrop `data-testid` hooks back browser coverage for sign-in, mobile drawer/details interactions, sticky composer placement, scroll containment, and realtime job message transitions
+- the delivered UI also includes the reconciled dark chat-first redesign, optimistic chat responsiveness, restored job activity in the thread transcript, and transcript surface/offset polish
+- `elowen-ui` `main` now contains the full Slice 30 implementation and the workspace `main` pointer is updated to that merged child revision
+- automated validation passed on merged `elowen-ui` `main`: `cargo fmt --check`, `cargo test`, `cargo clippy --all-targets -- -D warnings`, and `npm run test:e2e`
+- manual UAT passed against the live authenticated deployment at `https://api.ericburden.dev/`, including sign-in, optimistic chat behavior, thread-visible job updates, and transcript styling
 
 ---
 
@@ -1363,7 +1371,7 @@ Post-MVP slice plan from here:
 - `Slice 40 - CI Workflow Maintenance`
 
 Immediate next deliverable:
-- `Slice 30 - UI Browser Automation`
+- `Slice 31 - Chat Surface And Draft UX Polish`
 
 Slice 29 closeout:
 - selected thread, selected job, composer text, panel state, and transcript scroll now persist across background updates
@@ -1371,12 +1379,10 @@ Slice 29 closeout:
 - the UI explicitly manages capped reconnect/backoff recovery and catch-up refresh after SSE interruptions
 - polling remains as a slower fallback until browser automation proves the critical realtime UI flows
 
-Stop point as of 2026-04-06:
-- workspace pins documentation-refreshed child repos: `elowen-api` at `1200014`, `elowen-edge` at `80cd15e`, `elowen-notes` at `5f3c4ec`, `elowen-platform` at `af9752a`, and `elowen-ui` at `96dc194`
-- VPS API image is `ghcr.io/elowen-assistant/elowen-api:sha-d0e31259aab80b3b1897a97b589372aabb3271ff`
-- VPS UI image is `ghcr.io/elowen-assistant/elowen-ui:sha-a480c8b52ee51177aef2c4ebc58a96e0adb48477`
-- latest deployed verification covered public UI/API reachability, authenticated session behavior, and authenticated SSE delivery for `device.changed`
-- recommended next project step is `Slice 30 - UI Browser Automation`
+Stop point as of 2026-04-15:
+- Slice 30 is closed: browser automation coverage, live UAT, child-repo merge, and workspace pointer update are complete
+- production now runs the `elowen-ui` image built from merged `main` at `ghcr.io/elowen-assistant/elowen-ui:sha-bf1baf317d02a0c16936aacc13f2e849cab1f273`
+- the next recommended project step is `Slice 31 - Chat Surface And Draft UX Polish`
 
 Important note:
 - `Workflow #2` baseline and the first post-MVP execution/chat/security/discovery expansion set are now live through `Slice 28`
@@ -1386,7 +1392,7 @@ Important note:
 
 ## 21. Planned Post-30 Slice Set
 
-This section tracks all remaining outstanding work after the current `Slice 30` focus. Every currently tracked follow-on item is assigned to a planned slice.
+This section tracks all remaining outstanding work after the current `Slice 31` focus. Every currently tracked follow-on item is assigned to a planned slice.
 
 ### Workflow #2 - Conversational Orchestrator Reply Path
 
