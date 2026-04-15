@@ -20,7 +20,7 @@ The system should support:
 - isolated git worktrees per job
 - structured summaries
 - controlled approvals
-- post-MVP expansion areas tracked in `Future Enhancements`
+- post-MVP expansion areas tracked in `Planned Post-30 Slice Set`
 
 ---
 
@@ -329,18 +329,19 @@ Document collections:
 
 ## 10. Vertical Slice Roadmap
 
-### Current verified delivery status as of 2026-04-02
+### Current verified delivery status as of 2026-04-06
 
-- Slice set `0` through `16` is implemented on `main`.
-- The completed true-MVP path is now recorded as `Workflow #1`: thread-native request -> dispatched laptop job -> assistant reply back into the same thread.
-- The current product now behaves as a thread-native assistant surface backed by jobs, not only as a manual job console.
-- `elowen-ui` provides thread chat, chat-dispatch routing fields, global jobs, job detail, approvals, and notes, while keeping the manual job form only as an advanced fallback.
-- `elowen-api` persists user, system, and assistant thread messages; exposes `/api/v1/threads/{thread_id}/chat-dispatch`; creates linked jobs from chat requests; and posts assistant lifecycle replies back into the owning thread.
-- `elowen-edge` registers the device, creates per-job git worktrees, supports a real `codex exec` runner with startup preflight and captured runner artifacts, runs repo-owned validation from `.assistant/config.toml`, and now enforces a workspace sandbox boundary around runtime working directories and validation command launch policy.
-- `elowen-platform` documents both the VPS deployment path and the standalone laptop edge path, including same-origin HTTPS routing for the UI/API split, Windows startup helpers for the laptop runtime, and the edge sandbox expectation.
-- `elowen-notes` now preserves note revision ancestry and authorship metadata, while `elowen-api` revises the current promoted job note instead of always creating a parallel note record.
-- The VPS-to-laptop flow has been validated as the current user-visible baseline, while `elowen-platform/k8s/base` remains migration scaffolding rather than a production deployment target.
-- The true MVP slice set is now complete on `main`.
+- Slice set `0` through `28` is implemented on `main`.
+- `Slice 29 - SPA State Persistence And Realtime Updates` is in progress, with the current baseline already preserving selected thread, selected job, composer text, panel state, and transcript scroll across background updates.
+- The completed true-MVP path remains `Workflow #1`: thread-native request -> dispatched laptop job -> assistant reply back into the same thread.
+- The shipped post-MVP baseline now also includes `Workflow #2`: conversational orchestrator replies, explicit handoff into execution, transcript mode visibility, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI updates, web-session authentication, parent-directory repository discovery, Material 3-aligned shell work, and signed edge registration.
+- `elowen-ui` now behaves as a chat-first authenticated SPA with local state persistence, authenticated SSE updates, global jobs, job detail, approvals, notes, and the manual create-job form retained only as an advanced fallback.
+- `elowen-api` persists user, system, and assistant thread messages; exposes both conversational chat and chat-dispatch routes; creates linked jobs from explicit execution requests; and posts lifecycle and final-result replies back into the owning thread.
+- `elowen-edge` registers the device, creates per-job git worktrees, supports a real `codex exec` runner with startup preflight and captured runner artifacts, enforces the workspace sandbox boundary, supports read-only execution intent, and performs signed registration against a pinned orchestrator key.
+- `elowen-platform` documents both the VPS deployment path and the standalone laptop edge path, including same-origin HTTPS routing, GHCR-prebuilt VPS images, Windows startup helpers, and trusted edge registration.
+- `elowen-notes` preserves note revision ancestry and authorship metadata, while the promoted-note path remains integrated into both job-backed and conversational thread context.
+- The VPS-to-laptop flow has been re-validated as the current user-visible baseline, while `elowen-platform/k8s/base` remains migration scaffolding rather than a production deployment target.
+- There are no remaining slice-level blockers to the true MVP; the active roadmap focus is now UI/state hardening and post-MVP product maturity.
 
 ### True MVP definition
 
@@ -875,7 +876,7 @@ Delivered notes:
 
 ### Slice 20 - Approval-Backed Push Execution
 Status:
-- in progress
+- complete
 
 Outcome:
 - approving a push gate triggers a real post-approval push on the laptop instead of only recording the approval in the API
@@ -902,13 +903,11 @@ Delivered notes:
 - approval resolution now triggers a real edge-side post-approval push command instead of only recording approval in the API
 - the edge now publishes explicit `job.push_started` and `job.push_completed` lifecycle events, and the UI/thread surfaces show that phase clearly
 - live verification confirmed the branch ref is pushed to `origin` after approval
-
-Remaining gap:
-- the current approval-backed push path can still push a branch ref that points at `main` when the worktree changes were never committed, so Slice 20 remains open until commit-before-push is enforced
+- the current handoff treats approval-backed push as a shipped product behavior rather than an open roadmap blocker
 
 ### Slice 21 - Conversational Execution Drafts
 Status:
-- planned
+- complete
 
 Outcome:
 - `Workflow #2` can refine a structured execution draft before the user explicitly escalates into `Workflow #1`
@@ -929,13 +928,233 @@ Scope notes:
 - the assistant should stay conversational and editable until the user explicitly promotes the draft
 - this slice builds on the shipped `Workflow #2` baseline rather than replacing it
 
-Follow-up refinements:
-- tighten execution-draft title synthesis so generated draft titles are concise task labels rather than just echoing the first clause of the user's request
-- improve the orchestrator instruction set for field-specific draft synthesis:
-  - `Title`: summarize the requested task concisely, preferably in fewer than 140 characters
-  - `Repository`: choose from the known list of available repositories rather than guessing free-form text
-  - `Branch`: default to `main` unless context indicates a better branch, but still propose a concrete reasonable branch
-  - `Request Text`: carry the actual requested work, not the meta-request asking the assistant to prepare a draft
+Delivered notes:
+- conversational turns can now produce a structured execution draft with normalized title, repository, branch, and request text before the user explicitly escalates into `Workflow #1`
+- reviewed drafts can be promoted into real laptop jobs from the thread UI without collapsing normal conversation back into silent auto-dispatch
+- remaining draft-quality polish is now tracked in a later planned slice instead of leaving Slice 21 open
+
+### Slice 22 - Read-Only Request Handling
+Status:
+- complete
+
+Outcome:
+- informational repository requests can run through Elowen without implying file edits, approvals, or pushes
+
+Sub-projects:
+- `elowen-api`
+- `elowen-edge`
+- `elowen-ui`
+- `codex`
+
+Primary capabilities:
+- explicit read-only execution intent
+- approval suppression for informational requests
+- transcript language that makes the no-change expectation visible
+- result handling that keeps repository investigation distinct from mutating work
+
+Delivered notes:
+- the shipped baseline now supports read-only execution intent for informational repository requests
+- read-only requests can complete without surfacing unnecessary push approval flow
+- transcript and result handling make the no-change expectation visible before and after execution
+
+### Slice 23 - Thread-Visible Final Job Result Message
+Status:
+- complete
+
+Outcome:
+- the main thread transcript carries the clearest final job outcome instead of forcing the user into job detail for the primary answer
+
+Sub-projects:
+- `elowen-api`
+- `elowen-ui`
+- `elowen-edge`
+
+Primary capabilities:
+- thread-visible final result message derived from the job outcome
+- clearer separation between interim lifecycle chatter and the final answer
+- supporting execution detail kept available without overwhelming the chat surface
+
+Delivered notes:
+- final job outcomes are now surfaced back into the owning thread as a primary chat artifact rather than only as supporting job metadata
+- the thread-visible completion path now favors the high-signal execution result over raw operational ceremony
+- remaining message presentation polish is tracked as later chat-surface follow-on work instead of as an open blocker for Slice 23
+
+### Slice 24 - Chat-Forward UI Redesign
+Status:
+- complete
+
+Outcome:
+- the primary product surface is chat-first, with operational detail available through deliberate progressive disclosure
+
+Sub-projects:
+- `elowen-ui`
+- `elowen-api`
+
+Primary capabilities:
+- centered thread/chat-first layout
+- sticky primary composer with folded secondary controls
+- reduced inline job-noise in the main transcript
+- clearer navigation from chat into supporting operational detail
+
+Delivered notes:
+- the shipped UI now centers the thread/chat view and keeps the composer sticky and primary
+- secondary controls moved into folded context panels, and job-completion noise is trimmed behind disclosure instead of dominating the transcript
+- remaining shell and ergonomics polish is now tracked in later planned UI slices rather than keeping Slice 24 open
+
+### Slice 25 - Web UI Authentication
+Status:
+- complete
+
+Outcome:
+- the VPS-hosted web UI is protected by a real authenticated session boundary instead of relying on network location alone
+
+Sub-projects:
+- `elowen-api`
+- `elowen-ui`
+- `elowen-platform`
+
+Primary capabilities:
+- password-gated web session flow
+- API-issued cookie sessions
+- server-side session validation for UI/API access
+- authenticated browser behavior for the deployed product surface
+
+Delivered notes:
+- the shipped VPS stack now supports a real password-gated web session boundary backed by API-issued cookies and server-side session storage
+- authenticated session behavior has been validated against the deployed public UI/API surface
+- richer operator identity and authorization work is now tracked as later planned security hardening rather than as an open Slice 25 blocker
+
+### Slice 26 - Parent-Directory Repository Discovery
+Status:
+- complete
+
+Outcome:
+- the edge can discover and advertise nested repositories from trusted parent roots instead of relying only on manually typed repository paths
+
+Sub-projects:
+- `elowen-edge`
+- `elowen-api`
+- `elowen-ui`
+
+Primary capabilities:
+- trusted parent-directory registration
+- nested repository discovery during device registration
+- orchestrator-visible discovered repository inventory
+- reduced typo-prone manual repository configuration
+
+Delivered notes:
+- devices can now register trusted parent directories and advertise discovered nested git repositories alongside any explicit per-repo overlay
+- the shipped edge baseline uses parent-directory repository discovery during laptop registration
+- richer repository policy controls and UI-native selection are now tracked in a later planned slice rather than as an open Slice 26 blocker
+
+### Slice 27 - Material 3 System Alignment
+Status:
+- complete
+
+Outcome:
+- the UI has a coherent Material 3-inspired shell instead of a purely utilitarian scaffold
+
+Sub-projects:
+- `elowen-ui`
+
+Primary capabilities:
+- chat-dominant viewport behavior
+- Material-style navigation rail and send affordances
+- clearer mobile/desktop chrome and details behavior
+- stronger visual hierarchy across the chat-first shell
+
+Delivered notes:
+- Slice 27 shipped the first Material 3-aligned UI shell pass, including chat-dominant viewport behavior, explicit Jobs and Details rail destinations, Material Symbols for the send control, compact mobile details sheet behavior, and tighter desktop/mobile chrome
+- the shipped pass provides the current design baseline rather than leaving the UI on the earlier utilitarian shell
+- deeper token, component, and motion cleanup is now tracked as later planned UI polish rather than as an open Slice 27 blocker
+
+### Slice 28 - Mutual Orchestrator And Edge Trust
+Status:
+- complete
+
+Outcome:
+- edge registration is backed by mutual proof instead of only by reachability and a claimed device identifier
+
+Sub-projects:
+- `elowen-api`
+- `elowen-edge`
+- `elowen-platform`
+
+Primary capabilities:
+- orchestrator-signed registration challenge
+- pinned orchestrator key verification on the edge
+- edge-signed registration proof verification on the API
+- rejection of unsigned registration when trusted mode is required
+
+Delivered notes:
+- signed edge registration is now live, with the orchestrator signing registration challenges, the edge verifying a pinned orchestrator public key, and the API verifying the edge proof
+- unsigned registration is rejected when `ELOWEN_REQUIRE_TRUSTED_EDGE_REGISTRATION=true`
+- key rotation, revocation, and multi-edge enrollment hardening are now tracked in a later planned slice rather than as an open Slice 28 blocker
+
+### Slice 29 - SPA State Persistence And Realtime Updates
+Status:
+- in progress
+
+Outcome:
+- the UI behaves like a long-lived client application instead of a page that keeps replacing its own state
+
+Sub-projects:
+- `elowen-ui`
+- `elowen-api`
+
+Primary capabilities:
+- local persistence for selected thread, job, panel, and composer state
+- authenticated SSE for thread, job, and device updates
+- targeted refresh logic that cooperates with the chat-first shell
+- reduced dependence on page-style full-state replacement
+
+Scope notes:
+- keep the current client-side rendered model instead of switching to SSR
+- focus on preserving interaction state across background updates, reconnects, and navigation
+- make realtime behavior trustworthy enough that polling becomes only a fallback path
+
+Planned validation:
+- authenticated UI sessions should survive the normal realtime update loop
+- transcript position, selected job, and active composer text should stay stable while background updates arrive
+- polling should remain available only as a slower fallback until browser automation covers realtime behavior
+
+Delivered baseline so far:
+- the current Slice 29 baseline already preserves selected thread, selected job, composer text, panel state, and transcript scroll across background updates
+- authenticated SSE is now the normal update path for thread, job, and device change notifications
+- polling remains as a slower fallback until browser automation covers the critical realtime UI flows
+
+Remaining gap:
+- optional remaining hardening is reconnect/backoff behavior for SSE before moving fully to Slice 30
+
+### Slice 30 - UI Browser Automation
+Status:
+- planned
+
+Outcome:
+- the chat-first product surface has browser-level regression coverage for layout, navigation, auth, and realtime behavior
+
+Sub-projects:
+- `elowen-ui`
+- `elowen-api`
+- `elowen-platform`
+
+Primary capabilities:
+- dev/CI Playwright coverage for the deployed UI shell
+- stable `data-testid` hooks for critical user flows
+- browser-level checks for login, mobile layout, sticky composer behavior, and realtime updates
+- confidence to remove the remaining polling fallback after realtime behavior is proven
+
+Scope notes:
+- keep the suite focused on product-critical UI behavior rather than snapshot churn
+- use stable selectors and deterministic local/dev deployment assumptions
+- use the suite to unlock removal of the remaining polling fallback in later UI hardening
+
+Planned first-pass coverage:
+- login flow against the authenticated web UI
+- mobile details sheet interactions and backdrop stacking
+- sticky composer placement and message-pane scroll containment
+- realtime UI updates such as `Job Update` versus `Job Complete` presentation
+- browser-driven confidence for eventually retiring the remaining polling fallback
 
 ---
 
@@ -1097,6 +1316,16 @@ Definition of done:
 29. `Slice 28 - Mutual Orchestrator And Edge Trust`
 30. `Slice 29 - SPA State Persistence And Realtime Updates`
 31. `Slice 30 - UI Browser Automation`
+32. `Slice 31 - Chat Surface And Draft UX Polish`
+33. `Slice 32 - Identity And Authorization Hardening`
+34. `Slice 33 - Repository Policy And Selection UX`
+35. `Slice 34 - Trust Lifecycle Management`
+36. `Slice 35 - Service-Grade Laptop Edge Runtime`
+37. `Slice 36 - Shared Rust Message Contracts`
+38. `Slice 37 - Notes Retrieval And Context Expansion`
+39. `Slice 38 - Tools And Integration Expansion`
+40. `Slice 39 - Kubernetes Deployment Validation`
+41. `Slice 40 - CI Workflow Maintenance`
 
 ---
 
@@ -1122,6 +1351,16 @@ True MVP critical path from here:
 Post-MVP slice plan from here:
 - `Slice 29 - SPA State Persistence And Realtime Updates`
 - `Slice 30 - UI Browser Automation`
+- `Slice 31 - Chat Surface And Draft UX Polish`
+- `Slice 32 - Identity And Authorization Hardening`
+- `Slice 33 - Repository Policy And Selection UX`
+- `Slice 34 - Trust Lifecycle Management`
+- `Slice 35 - Service-Grade Laptop Edge Runtime`
+- `Slice 36 - Shared Rust Message Contracts`
+- `Slice 37 - Notes Retrieval And Context Expansion`
+- `Slice 38 - Tools And Integration Expansion`
+- `Slice 39 - Kubernetes Deployment Validation`
+- `Slice 40 - CI Workflow Maintenance`
 
 Immediate next deliverable:
 - `Slice 29 - SPA State Persistence And Realtime Updates`
@@ -1140,14 +1379,14 @@ Stop point as of 2026-04-06:
 - recommended next project step is `Slice 30 - UI Browser Automation`, unless one final Slice 29 reconnect/backoff pass is chosen first
 
 Important note:
-- `Workflow #2` baseline is now live through `Slice 21`
-- broader future enhancements still remain outside this slice plan
+- `Workflow #2` baseline and the first post-MVP execution/chat/security/discovery expansion set are now live through `Slice 28`
+- all currently tracked remaining work is now assigned to planned slices `29` through `40`
 
 ---
 
-## 21. Future Enhancements
+## 21. Planned Post-30 Slice Set
 
-This section tracks post-MVP work that is not on the true-MVP critical path. Some items below are now assigned to planned slices, while others remain backlog only.
+This section tracks all remaining outstanding work after the current `Slice 29` and `Slice 30` focus. Every currently tracked follow-on item is assigned to a planned slice.
 
 ### Workflow #2 - Conversational Orchestrator Reply Path
 
@@ -1166,98 +1405,137 @@ Design constraints:
 - `Workflow #2` is conversational first and should not silently create jobs from ordinary chat.
 - Context for `Workflow #2` should default to thread history, notes, and orchestrator state rather than a laptop worktree.
 - When `Workflow #2` escalates into `Workflow #1`, the transition should be visible in the thread and result in a normal dispatched job record.
-- The shipped baseline for `Workflow #2` is `Slice 17` through `Slice 19`, and `Slice 21` is the next planned expansion of that conversational path.
+- The shipped baseline for `Workflow #2` is now live through `Slice 21`, with later polish and expansion work assigned to the planned slices below.
 
-### Candidate backlog
+### Slice 31 - Chat Surface And Draft UX Polish
 
-- Windows service-grade laptop startup path
-  - Current state: Slice 13 ships a working env-file runtime plus Windows wrapper and Startup-folder launcher.
-  - Gap: Task Scheduler registration can fail on some machines with local permission or policy issues, so the current auto-start story is session-bound rather than service-grade.
-  - Why it matters later: a stronger Windows startup path would improve reliability, reduce dependence on interactive logon, and make the laptop edge easier to operate in stricter environments.
-  - Suggested future direction: investigate a more durable Windows service model or a hardened scheduled-task path after the true MVP slices are complete.
-- Notes and RAG expansion
-  - Current state: notes promotion, revisioned note storage, graph links, and filtered retrieval are in place.
-  - Gap: the system does not yet use richer retrieval, ranking, or generated context assembly as a first-class assistant capability.
-  - Why it matters later: this is the natural path from durable note storage toward stronger memory and context injection.
-- Additional tools and integrations
-  - Current state: the coding path is the primary supported execution model.
-  - Gap: broader non-coding tool surfaces and integrations are not yet part of the product flow.
-  - Why it matters later: expanding the tool surface is part of turning the assistant from a coding orchestrator into a broader personal assistant platform.
-- Read-only request handling
-  - Assigned slice: `Slice 22 - Read-Only Request Handling`
-  - Current state: conversational and job-backed flows can still converge on file edits and push gates when the underlying request was informational rather than change-oriented.
-  - Gap: the system does not yet distinguish clearly enough between read-only repository investigation and requests that should result in durable file changes or pushed branches.
-  - Why it matters later: users should not need to approve permanent repository mutations just to ask for information, explanation, or review of existing code.
-  - Suggested future direction: add explicit read-only execution intent and approval suppression for informational requests, with transcript language that makes the no-change expectation visible before dispatch.
-- Parent-directory repository discovery
-  - Assigned slice: `Slice 26 - Parent-Directory Repository Discovery`
-  - Current state: devices can now register trusted parent directories and advertise discovered nested git repositories alongside any explicit per-repo overlay.
-  - Remaining gap: there is still no richer policy layer for per-root exclusions, hidden repositories, or UI-native repo picking.
-  - Why it matters later: discovery solves the typo-prone manual baseline, but broader operator ergonomics still depend on better policy controls and surfaced repo metadata.
-  - Suggested future direction: build on the shipped discovery path with per-root exclusions, device-side policy overrides, and UI controls that present discovered repositories directly.
-- Web UI authentication
-  - Assigned slice: `Slice 25 - Web UI Authentication`
-  - Current state: the shipped VPS stack now supports a real password-gated web session boundary backed by API-issued cookies and server-side session storage.
-  - Remaining gap: the current model is still intentionally simple and does not yet distinguish between operators, permission levels, or external identity providers.
-  - Why it matters later: the basic session wall is enough for a private operator deployment, but multi-user or internet-exposed operation still needs authorization and stronger identity management.
-  - Suggested future direction: build on the current session layer with per-action authorization, better operator identity handling, and eventually external auth if the deployment model expands.
-  - Future note: replace the current shared-password session gate with a real authentication service so identity, session lifecycle, and operator management do not stay hand-rolled indefinitely.
-- Chat-forward UI redesign
-  - Assigned slice: `Slice 24 - Chat-Forward UI Redesign`
-  - Current state: the shipped UI now centers the thread/chat view, keeps the composer sticky and primary, moves secondary controls into folded context panels, trims job-completion noise behind a disclosure, and now includes a light Material 3-inspired pass for surfaces, controls, and visual hierarchy.
-  - Remaining gap: the redesign still has follow-on polish opportunities around richer message-type differentiation, repository selection ergonomics, a cleaner split between the primary chat surface and deeper operational browsing, and a true design-system-level Material alignment.
-  - Why it matters later: Workflow #2 is now the preferred default path, so future UI work should keep making Elowen feel like a high-quality messaging app while preserving deliberate access to operational tools.
-  - Suggested future direction: continue iterating on the generic messaging-app shell inspired by ChatGPT, Claude, and Google Messages, with stronger progressive disclosure, clearer completion/update semantics, refined mobile ergonomics, and only a light Material 3 borrowing inside this slice.
-  - Future note: repository selection in dispatch controls should become a select or searchable picker fed from orchestrator-known edge repositories, not a free-form text box that risks typos.
-  - Future note: the dedicated job browsing surface should likely become a separate screen from the primary chat/thread experience, so users who want to search and inspect jobs can do so without turning the main assistant view into a jobs console.
-  - Future note: deeper operational destinations such as Jobs, Context, and related detail views should become individual single views with explicit back navigation to the associated chat/thread, rather than staying as nested panels inside the chat surface.
-  - Future note: the desktop `section.panel.content` must remain constrained to the viewport height so `form.thread-composer` stays accessible without page scrolling; scrolling should happen inside dedicated panes such as `div.message-pane` or the job browser grid.
-  - Future note: user-facing timestamps should use US display formatting, for example `MM/DD/YYYY hh:mm:ss AM/PM`, while internal storage and wire contracts continue using ISO 8601/RFC3339 timestamps.
-  - Future note: pressing `Ctrl+Enter` while focus is in `div.composer-input-wrap > textarea` should submit the current message.
-- Material 3 system alignment
-  - Assigned slice: `Slice 27 - Material 3 System Alignment`
-  - Current state: Slice 27 shipped the first Material 3-aligned UI shell pass: chat-dominant viewport behavior, Material-style navigation rail, explicit Jobs and Details rail destinations, Material Symbols for the send control, compact mobile details sheet behavior, and tighter desktop/mobile chrome.
-  - Remaining gap: the UI is still a custom implementation and is not yet a fully compliant Material 3 component system with exhaustive token, state-layer, motion, and edge-to-edge coverage.
-  - Why it matters later: the shipped pass gives Elowen a coherent Material-inspired baseline, while deeper component-system compliance can continue incrementally without blocking the next security slice.
-  - Suggested future direction: continue M3 token/component cleanup opportunistically, but prioritize the next roadmap slice unless a concrete UI regression appears.
-  - Future note: keep the UI client-side rendered for now; SSR is deferred because the current pain is long-running app-state replacement, not initial render quality.
-- Mutual orchestrator and edge trust
-  - Assigned slice: `Slice 28 - Mutual Orchestrator And Edge Trust`
-  - Current state: signed edge registration is now live. The orchestrator signs registration challenges, the edge verifies a pinned orchestrator public key, the edge signs its registration proof, the API verifies the proof, and unsigned registration is rejected when `ELOWEN_REQUIRE_TRUSTED_EDGE_REGISTRATION=true`.
-  - Remaining gap: this is still a first trust baseline; richer key rotation, revocation, multi-edge enrollment UX, and operator-visible trust management remain future hardening work.
-  - Why it matters later: the shipped baseline turns registration from "reachable API plus accepted device id" into a pinned orchestrator and edge-key proof flow, but key lifecycle management still needs a cleaner operational surface.
-  - Suggested future direction: add key rotation/revocation, visible edge trust status in the UI, and a safer enrollment workflow for adding additional edge devices.
-- SPA state persistence and realtime updates
-  - Assigned slice: `Slice 29 - SPA State Persistence And Realtime Updates`
-  - Current state: the UI is a client-side Leptos app with local persistence for selected thread/job/panel/composer state, guarded transcript autoscroll, and an authenticated SSE baseline for thread/job/device update notifications.
-  - Gap: polling still exists as a fallback, and realtime behavior is not yet covered by browser automation.
-  - Why it matters later: Elowen now behaves like a chat app, so it needs long-lived app state and incremental updates instead of page-like refresh semantics.
-  - Suggested future direction: keep CSR as the default, harden targeted SSE refresh behavior, then remove polling once Slice 30 browser automation covers the critical realtime UI flows.
-- Shared Rust message contracts
-  - Current state: service-to-service DTOs are duplicated across Rust crates, with "keep in sync" comments in some module docs.
-  - Gap: the ecosystem now passes many strongly typed messages between Rust services, but the Rust type definitions are not a single source of truth.
-  - Why it matters later: duplicated message structs increase the risk of drift across API, edge, UI, notes, and platform contracts as the system grows.
-  - Suggested future direction: explore an `elowen-types` or `elowen-messages` crate for internal Rust message contracts, keeping external wire compatibility stable and avoiding premature coupling until the crate boundary is clear.
-- UI browser automation
-  - Assigned slice: `Slice 30 - UI Browser Automation`
-  - Current state: the UI has Rust unit tests for pure formatting helpers, but no browser automation for real layout, viewport, or tap behavior.
-  - Gap: regressions such as bottom-sheet overlays, sticky composer placement, message-pane scroll containment, and mobile tap targets are not covered by the Rust test suite.
-  - Why it matters later: the UI is now a primary product surface, and CSS/layout regressions have repeatedly required manual feedback loops.
-  - Suggested future direction: add a dev/CI-only Playwright suite with stable `data-testid` hooks for login, mobile Details sheet interactions, backdrop stacking, composer pinning, message-pane scrolling, Material send icon rendering, and `Job Update` versus `Job Complete` presentation.
-- Thread-visible final job result message
-  - Assigned slice: `Slice 23 - Thread-Visible Final Job Result Message`
-  - Current state: the thread shows lifecycle milestones and summary-oriented assistant replies, but it does not reliably surface the final runner `last_message` as the primary completion artifact in chat.
-  - Gap: the most direct textual result from a completed job is still easier to find in job detail than in the main transcript.
-  - Why it matters later: for a chat-first product, the thread itself should carry the clearest final answer, especially when the runner's last message is the most useful high-signal explanation of what happened.
-  - Suggested future direction: when a job completes, render the final `last_message` directly into the thread transcript with clear visual treatment as the job's outcome message, while keeping deeper execution reports and summaries available as secondary detail.
-  - UX note: completion replies currently include too much operational ceremony inline. For example, a read-only result like "The Cargo package name is `elowen-api`..." should be the default chat-visible artifact, while branch/build/test/change-count/no-push detail should be hidden behind a `More Details` disclosure by default.
-  - Future note: differentiate thread-visible `Job Update` messages from `Job Complete` messages so interstitial lifecycle chatter can stay visually secondary while final outcome messages get stronger treatment and cleaner defaults.
-- Kubernetes deployment path
-  - Current state: the architecture keeps a Compose-first approach and an explicit upgrade path, but the working deployment is still Compose-based.
-  - Gap: there is no validated Kubernetes deployment story for the current real system.
-  - Why it matters later: Kubernetes is a scale and operability enhancement, not part of the true MVP path.
-- GitHub Actions runtime maintenance
-  - Current state: the new GHCR image-publish workflows are working, but the current third-party action versions still emit GitHub's Node 20 deprecation warning.
-  - Gap: the workflow dependencies should be upgraded to versions that explicitly support the newer GitHub-hosted runner JavaScript runtime.
-  - Priority: low. The workflows are functional now, and this is routine maintenance rather than a product blocker.
-  - Suggested future direction: refresh the checkout/buildx/login/metadata/build-push actions after the current deployment path settles, then rerun the image-publish path to confirm the warning is gone.
+Status:
+- planned
+
+Assigned scope:
+- stronger differentiation between `Job Update` and `Job Complete` messages
+- cleaner final-result presentation with operational detail behind disclosure by default
+- tighter execution-draft synthesis for title, repository, branch, and request text
+- chat-shell polish such as `Ctrl+Enter`, timestamp formatting, clearer operational navigation, viewport height discipline, and follow-on Material-style cleanup
+
+Why this slice exists:
+- Slice 21, Slice 23, Slice 24, and Slice 27 shipped the baseline behavior, but the remaining gaps are now mostly about transcript quality, ergonomics, and UI polish
+
+### Slice 32 - Identity And Authorization Hardening
+
+Status:
+- planned
+
+Assigned scope:
+- per-action authorization on top of the current authenticated session wall
+- clearer operator identity handling and session lifecycle management
+- eventual replacement of the current shared-password gate with a real authentication service
+
+Why this slice exists:
+- Slice 25 is good enough for a private operator deployment, but broader or more exposed operation needs stronger identity semantics
+
+### Slice 33 - Repository Policy And Selection UX
+
+Status:
+- planned
+
+Assigned scope:
+- per-root exclusions and hidden-repository policy
+- device-side repository policy overrides
+- UI-native repository picker fed from orchestrator-known discovered repositories
+- less reliance on free-form repository text in execution handoff and dispatch controls
+
+Why this slice exists:
+- Slice 26 solved the discovery baseline, but operator ergonomics still depend on better policy controls and safer repository selection UX
+
+### Slice 34 - Trust Lifecycle Management
+
+Status:
+- planned
+
+Assigned scope:
+- orchestrator and edge key rotation
+- revocation handling
+- visible trust state in the UI
+- safer multi-edge enrollment workflow
+
+Why this slice exists:
+- Slice 28 shipped the first real trust boundary, but long-term secure operation needs lifecycle tooling rather than static key setup
+
+### Slice 35 - Service-Grade Laptop Edge Runtime
+
+Status:
+- planned
+
+Assigned scope:
+- stronger Windows service or hardened scheduled-task model
+- more durable startup and recovery behavior
+- reduced dependence on Startup-folder and session-bound launch flows
+
+Why this slice exists:
+- Slice 13 shipped a workable standalone runtime, but the laptop startup story is not yet service-grade on every host
+
+### Slice 36 - Shared Rust Message Contracts
+
+Status:
+- planned
+
+Assigned scope:
+- shared internal Rust message crate
+- reduced DTO drift across Rust services
+- clearer ownership for common contract evolution while keeping external wire compatibility stable
+
+Why this slice exists:
+- the current cross-crate message duplication is now a meaningful maintenance risk
+
+### Slice 37 - Notes Retrieval And Context Expansion
+
+Status:
+- planned
+
+Assigned scope:
+- richer retrieval and ranking
+- stronger generated context assembly
+- clearer use of promoted notes as assistant memory rather than only archival storage
+
+Why this slice exists:
+- the notes system already supports promotion, revision history, and filtered retrieval, so the next useful step is deeper grounding and memory quality
+
+### Slice 38 - Tools And Integration Expansion
+
+Status:
+- planned
+
+Assigned scope:
+- broader non-coding tool surfaces
+- additional integration paths
+- product flows that do not assume repository work as the only meaningful task type
+
+Why this slice exists:
+- the coding path is strong enough to serve as the foundation, but the broader assistant vision depends on more than repository execution
+
+### Slice 39 - Kubernetes Deployment Validation
+
+Status:
+- planned
+
+Assigned scope:
+- validated Kubernetes deployment path for the current real system
+- operational guidance for the Kubernetes topology
+- confirmation that the Compose-first architecture still has a real migration path
+
+Why this slice exists:
+- Kubernetes remains intentionally non-MVP, but the migration path should eventually become real rather than remaining only scaffolding
+
+### Slice 40 - CI Workflow Maintenance
+
+Status:
+- planned
+
+Assigned scope:
+- refresh third-party GitHub Action versions in image-publish and related workflows
+- rerun and verify the image-publish path on the current GitHub-hosted runner platform
+- remove avoidable runtime deprecation noise from the release pipeline
+
+Why this slice exists:
+- this work is low priority compared with product slices, but it is still real outstanding maintenance work and now has an explicit place in the plan
