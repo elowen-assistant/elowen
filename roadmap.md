@@ -1366,9 +1366,10 @@ Post-MVP slice plan from here:
 - `Slice 38 - Tools And Integration Expansion`
 - `Slice 39 - Kubernetes Deployment Validation`
 - `Slice 40 - CI Workflow Maintenance`
+- `Slice 41 - Edge Client Usability And Runtime UX`
 
 Immediate next deliverable:
-- start `Slice 33 - Repository Policy And Selection UX`
+- start `Slice 34 - Trust Lifecycle Management`
 
 Slice 29 closeout:
 - selected thread, selected job, composer text, panel state, and transcript scroll now persist across background updates
@@ -1382,11 +1383,12 @@ Stop point as of 2026-04-20:
 - Slice 31 validation includes both automated phases plus local manual UAT covering draft presentation, result disclosure, dispatch promotion, timestamp formatting, and keyboard submit behavior
 - production still runs the `elowen-ui` image built from merged `main` at `ghcr.io/elowen-assistant/elowen-ui:sha-bf1baf317d02a0c16936aacc13f2e849cab1f273`
 - Slice 32 is closed on merged `main` across `elowen-api`, `elowen-ui`, `elowen-platform`, and `elowen-workspace`
-- the next recommended project step is `Slice 33 - Repository Policy And Selection UX`
+- Slice 33 is closed on merged `main` across `elowen-api`, `elowen-edge`, `elowen-ui`, `elowen-platform`, and `elowen-workspace`
+- the next recommended project step is `Slice 34 - Trust Lifecycle Management`
 
 Important note:
 - `Workflow #2` baseline and the first post-MVP execution/chat/security/discovery expansion set are now live through `Slice 31`
-- all currently tracked remaining work is now assigned to planned slices `32` through `40`
+- all currently tracked remaining work is now assigned to planned slices `32` through `41`
 
 ---
 
@@ -1449,7 +1451,7 @@ Closeout summary as of 2026-04-20:
 ### Slice 33 - Repository Policy And Selection UX
 
 Status:
-- planned
+- complete
 
 Assigned scope:
 - per-root exclusions and hidden-repository policy
@@ -1459,6 +1461,13 @@ Assigned scope:
 
 Why this slice exists:
 - Slice 26 solved the discovery baseline, but operator ergonomics still depend on better policy controls and safer repository selection UX
+
+Closeout summary as of 2026-04-20:
+- `elowen-edge` merged Slice 33 work adds hidden-repository and excluded-path policy, structured repository-plus-branch registration, and the trusted registration challenge route fix needed for current trusted-edge enrollment
+- `elowen-api` merged Slice 33 work stores device repository metadata, returns an operator-visible device catalog, allows operator device selection flows, and keeps dispatch behavior aligned with device-aware repository selection
+- `elowen-ui` merged Slice 33 work replaces free-form dispatch targeting with device-aware `Available Device` / `Repository` / `Base Branch` selectors, removes the user-visible `Prepared From` field, and preserves draft edits across polling and realtime refreshes
+- `elowen-platform` merged Slice 33 work adds the fast VPS UI deploy loop and updated deployment guidance for repository-policy-driven dispatch UX
+- local edge registration is now verified on `elowen-desktop`, the live VPS API and UI were refreshed during slice delivery, and manual UAT now centers on device-scoped repository and branch selection in both execution drafts and manual job dispatch
 
 ### Slice 34 - Trust Lifecycle Management
 
@@ -1551,3 +1560,19 @@ Assigned scope:
 
 Why this slice exists:
 - this work is low priority compared with product slices, but it is still real outstanding maintenance work and now has an explicit place in the plan
+
+### Slice 41 - Edge Client Usability And Runtime UX
+
+Status:
+- planned
+
+Assigned scope:
+- operator-facing and installer-grade usability pass over the edge client setup flow
+- clearer edge health reporting that distinguishes registration, probe reachability, trust state, and runnable execution state
+- Windows-first Codex runtime discovery, validation, and remediation guidance instead of relying on ad hoc local path knowledge
+- better startup diagnostics and UI-visible explanations when the edge falls back to simulated execution
+- lower-friction tunnel, trust-key, and local runtime setup on first run
+
+Why this slice exists:
+- the edge can now register and advertise repositories, but the end-to-end operator experience is still too fragile, especially on Windows where a present `codex.exe` may still fail from a background edge process
+- this work needs an explicit product-design and runtime-usability pass rather than continued piecemeal setup fixes
