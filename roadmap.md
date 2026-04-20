@@ -1430,7 +1430,7 @@ Why this slice exists:
 ### Slice 32 - Identity And Authorization Hardening
 
 Status:
-- planned
+- complete
 
 Assigned scope:
 - per-action authorization on top of the current authenticated session wall
@@ -1439,6 +1439,12 @@ Assigned scope:
 
 Why this slice exists:
 - Slice 25 is good enough for a private operator deployment, but broader or more exposed operation needs stronger identity semantics
+
+Closeout summary as of 2026-04-20:
+- `elowen-api` merged Slice 32 work adds local-account auth from `ELOWEN_UI_AUTH_CONFIG_PATH`, Argon2id password verification, legacy shared-password fallback, role-aware session persistence, and per-route `viewer` / `operator` / `admin` authorization
+- `elowen-ui` merged Slice 32 work adds local-account username/password sign-in, authenticated actor and role display, viewer read-only gating, and operator/admin affordance gating for chat, dispatch, note promotion, and approvals
+- `elowen-platform` merged Slice 32 work adds auth-config env wiring, secure-cookie config, mounted auth-file deployment support, local/VPS env template updates, and `env/ui-auth.example.toml` as the local-account shape reference
+- local automated validation passed on the slice branches, and the live VPS deployment was refreshed onto the merged Slice 32 auth flow before branch closeout
 
 ### Slice 33 - Repository Policy And Selection UX
 
