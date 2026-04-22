@@ -17,7 +17,7 @@ This folder is the umbrella workspace for Elowen, a personal cloud AI-assistant 
 
 ## Current State
 
-As of 2026-04-22, slices `0` through `36` are complete on merged `main`.
+As of 2026-04-22, slices `0` through `37` are complete on local `main`.
 
 The shipped baseline includes:
 
@@ -32,8 +32,10 @@ The shipped baseline includes:
 - a chat-first Leptos UI with web-session authentication
 - authenticated server-sent events for thread, job, and device updates, with explicit reconnect/backoff recovery and slower polling retained as a fallback
 - polished chat transcript/result surfaces and execution-draft handoff cards with local timestamp rendering and keyboard submit affordances
+- richer notes retrieval and ranking for promoted memory
+- stronger orchestrator-side note context assembly with direct thread/job memory prioritization and top-note detail expansion
 
-The next planned roadmap slice is `Slice 37 - Notes Retrieval And Context Expansion`.
+The next planned roadmap slice is `Slice 38 - Tools And Integration Expansion`.
 
 ## Clone
 

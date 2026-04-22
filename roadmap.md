@@ -1532,7 +1532,18 @@ Why this slice exists:
 ### Slice 37 - Notes Retrieval And Context Expansion
 
 Status:
-- planned
+- complete on local `main`
+
+Delivered:
+- `elowen-notes` now supports weighted note retrieval with explicit ranking inputs for conversational query text, additional context text, preferred note ids, and preferred source lineage rather than relying only on recency ordering
+- `elowen-notes` search results now return retrieval metadata so downstream consumers can distinguish why a note was surfaced and how strongly it matched the request
+- `elowen-api` now assembles a richer conversational note-memory bundle that prioritizes direct thread and job promotions, merges retrieval reasons across note candidates, and expands the top matched note bodies into assistant context
+- conversational replies now format note memory with role, source, score, and excerpt context so promoted notes behave more like assistant memory than passive archival summaries
+
+Validation:
+- automated validation passed in `elowen-notes`: `cargo check`, `cargo fmt --check`, `cargo test --quiet`, `cargo clippy --all-targets -- -D warnings`, and `cargo doc --no-deps`
+- automated validation passed in `elowen-api`: `cargo check`, `cargo fmt --check`, `cargo test --quiet`, `cargo clippy --all-targets -- -D warnings`, and `cargo doc --no-deps`
+- manual UAT passed on 2026-04-22 against the live authenticated deployment at `https://api.ericburden.dev/`, covering sign-in, summary promotion into notes, job and thread note refresh, and conversational follow-up grounded in promoted memory on the deployed `elowen-api` and `elowen-notes` Slice 37 images
 
 Assigned scope:
 - richer retrieval and ranking
