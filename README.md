@@ -17,7 +17,7 @@ This folder is the umbrella workspace for Elowen, a personal cloud AI-assistant 
 
 ## Current State
 
-As of 2026-04-22, slices `0` through `37` are complete on local `main`.
+As of 2026-04-23, slices `0` through `38` are complete on this Slice 38 branch, with slices `0` through `37` complete on local `main`.
 
 The shipped baseline includes:
 
@@ -34,8 +34,11 @@ The shipped baseline includes:
 - polished chat transcript/result surfaces and execution-draft handoff cards with local timestamp rendering and keyboard submit affordances
 - richer notes retrieval and ranking for promoted memory
 - stronger orchestrator-side note context assembly with direct thread/job memory prioritization and top-note detail expansion
+- generic-job orchestration where repository execution is one specialization rather than the universal default
+- capability-targeted non-repo job drafts, dispatch, routing, and edge execution for the first prompt-first generic-job vertical
+- manual Slice 38 UAT proving both capability execution without a repo worktree and repository execution with disposable worktrees plus passing validation in the local Compose stack
 
-The next planned roadmap slice is `Slice 38 - Tools And Integration Expansion`.
+The next planned roadmap slice is `Slice 39 - Kubernetes Deployment Validation`.
 
 ## Clone
 
