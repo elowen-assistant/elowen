@@ -1340,7 +1340,7 @@ Definition of done:
 
 ## 20. Next Deliverable
 
-Slice set `0` through `36` is complete on merged `main`, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, the Slice 31 chat-surface polish pass, the Slice 32 identity/authorization hardening closeout, the Slice 33 repository policy and selection UX closeout, the Slice 34 trust lifecycle management closeout, the Slice 35 laptop edge runtime closeout, and the Slice 36 shared Rust message contracts closeout.
+Slice set `0` through `38` is complete on the current Slice 38 branch, and slices `0` through `37` are complete on merged `main`, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, the Slice 31 chat-surface polish pass, the Slice 32 identity/authorization hardening closeout, the Slice 33 repository policy and selection UX closeout, the Slice 34 trust lifecycle management closeout, the Slice 35 laptop edge runtime closeout, the Slice 36 shared Rust message contracts closeout, the Slice 37 notes retrieval and context expansion closeout, and the Slice 38 generic-job and non-repo execution closeout.
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
@@ -1353,19 +1353,20 @@ Current delivered baseline:
 - signed edge registration, parent-directory repo discovery, probing, dispatch, worktree creation, lifecycle events, summaries, and validation reporting
 - authenticated web UI sessions
 - authenticated SSE notifications for thread, job, and device changes, with polling retained as a fallback
+- generic jobs with explicit repository-versus-capability targeting
+- prompt-first execution envelopes for both conversational drafts and dispatch
+- capability-routed non-repo execution that skips worktree, commit, and push flows
 
 True MVP critical path from here:
 - no remaining slice-level blockers
 
 Post-MVP slice plan from here:
-- `Slice 37 - Notes Retrieval And Context Expansion`
-- `Slice 38 - Tools And Integration Expansion`
 - `Slice 39 - Kubernetes Deployment Validation`
 - `Slice 40 - CI Workflow Maintenance`
 - `Slice 41 - Edge Client Usability And Runtime UX`
 
 Immediate next deliverable:
-- start `Slice 37 - Notes Retrieval And Context Expansion`
+- start `Slice 39 - Kubernetes Deployment Validation`
 
 Slice 29 closeout:
 - selected thread, selected job, composer text, panel state, and transcript scroll now persist across background updates
@@ -1386,6 +1387,9 @@ Stop point as of 2026-04-22:
 - Slice 35 manual UAT passed on the current Windows host for scheduled-task launch, trusted registration, and wrapper-driven process recovery, with the important caveat that this host denied the strict non-interactive `Startup + S4U` install path from the current non-elevated session
 - Slice 36 is closed on merged `main` across `elowen-api`, `elowen-edge`, `elowen-platform`, and `elowen-workspace`
 - Slice 36 delivered a shared internal Rust API-edge contract crate under `elowen-platform/contracts/rust/elowen-contracts`, removed duplicated Rust DTO definitions from `elowen-api` and `elowen-edge`, and preserved the existing wire compatibility for registration, probe, dispatch, approval, and lifecycle messages
+- Slice 37 is closed on merged `main` across `elowen-api`, `elowen-notes`, and `elowen-workspace`
+- Slice 38 is closed on the current branch across `elowen-api`, `elowen-edge`, `elowen-platform`, `elowen-ui`, and `elowen-workspace`
+- Slice 38 manual UAT passed on 2026-04-23 in the local Compose stack, including capability job dispatch without a repo worktree and repository job dispatch with worktree creation plus passing `cargo check` and `cargo test --quiet` validation inside the disposable worktree
 - Slice 36 automated validation passed in `elowen-platform/contracts/rust/elowen-contracts`, `elowen-api`, and `elowen-edge`, and minimal local manual UAT passed on 2026-04-22 for trusted registration plus a real read-only dispatch through `job.completed`
 - the next recommended project step is `Slice 37 - Notes Retrieval And Context Expansion`
 
@@ -1556,12 +1560,38 @@ Why this slice exists:
 ### Slice 38 - Tools And Integration Expansion
 
 Status:
-- planned
+- closed on branch
 
 Assigned scope:
 - broader non-coding tool surfaces
 - additional integration paths
 - product flows that do not assume repository work as the only meaningful task type
+- generic job target model where repository execution is one specialization
+- capability-targeted non-repo execution path for the first narrow vertical
+- prompt-first execution envelope with `target_kind + target_name + prompt`, keeping extra structure only where it changes routing or policy behavior
+- provider-backed tool integrations remain deferred until the generic job foundation settles
+
+Delivered in this slice:
+- shared contracts, API transport, UI models, and edge dispatch now distinguish `repository` and `capability` job targets explicitly
+- conversational replies can emit structured capability-targeted execution drafts alongside repository drafts
+- the orchestrator can create and route capability jobs without `repo_name`, using device capabilities as the dispatch primitive
+- the edge can execute capability jobs without creating a git worktree and without entering commit or push approval flows
+- repository jobs remain a specialization of the generic model and still create disposable worktrees for execution
+- the request shape is now prompt-first: the platform carries minimal typed routing and policy metadata around a rich textual prompt instead of a heavily structured task object
+- the local Compose edge mount/layout now supports repository-job UAT correctly even when the workspace itself is a git worktree with submodules
+
+Validation and closeout:
+- automated validation passed for the Slice 38 code changes in the touched Rust repos during implementation
+- Docker Compose builds for `elowen-api` and `elowen-edge` were verified after updating build contexts and Dockerfiles for the shared contracts crate
+- manual UAT passed on 2026-04-23 in the local authenticated Compose stack:
+- capability job thread `01KPVB6EMRCH0T2KXAXBYTC33X` and job `01KPVB7FRKZ9FMMHZ64NST3SA7` verified non-repo dispatch and completion
+- repository job thread `01KPXCG5SW4GH2A4H45QBJ33WH` and job `01KPXCGBJGHMXPSH1M64MK78QZ` verified worktree creation plus successful `cargo check` and `cargo test --quiet` validation
+- follow-up GitHub issues for Docker build support and repository-job validation were closed after those fixes were verified
+
+Deferred from this slice:
+- provider-backed integrations such as Calendar, Gmail, and Drive
+- richer capability taxonomy beyond the initial `generic_jobs` vertical
+- service-specific auth and policy surfaces for future non-repo integrations
 
 Why this slice exists:
 - the coding path is strong enough to serve as the foundation, but the broader assistant vision depends on more than repository execution
