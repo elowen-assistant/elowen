@@ -17,7 +17,7 @@ This folder is the umbrella workspace for Elowen, a personal cloud AI-assistant 
 
 ## Current State
 
-As of 2026-04-23, slices `0` through `39` are complete on this Slice 39 branch, with slices `0` through `38` complete on local `main`.
+As of 2026-04-23, slices `0` through `40` are complete on this Slice 40 branch, with slices `0` through `39` complete on local `main`.
 
 The shipped baseline includes:
 
@@ -40,8 +40,11 @@ The shipped baseline includes:
 - an audited Kubernetes base that reflects the post-Slice-38 stack more truthfully, including the current API auth/config inputs and GHCR-backed image defaults
 - manual Slice 39 validation in a local `kind` cluster proving the in-cluster orchestrator stack applies and runs, with private GHCR registry access called out as the first real operator-side deployment prerequisite
 - an explicit supported Kubernetes topology where `elowen-edge` remains a separate trusted device runtime and any in-cluster edge manifest is treated as experimental only
+- refreshed GitHub Actions publish workflows that run cleanly on current hosted runners and no longer depend on the deprecated Node 20 action runtime path
+- a repaired `elowen-api` image publish path that checks out the shared `elowen-platform` contracts repo during hosted image builds
+- hosted Slice 40 verification runs passing for `elowen-api`, `elowen-notes`, and `elowen-ui` image publish plus the `elowen-ui` browser automation workflow
 
-The next planned roadmap slice is `Slice 40 - CI Workflow Maintenance`.
+The next planned roadmap slice is `Slice 41 - Edge Client Usability And Runtime UX`.
 
 ## Clone
 
