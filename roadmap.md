@@ -1340,7 +1340,7 @@ Definition of done:
 
 ## 20. Next Deliverable
 
-Slice set `0` through `39` is complete on the current Slice 39 branch, and slices `0` through `38` are complete on merged `main`, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, the Slice 31 chat-surface polish pass, the Slice 32 identity/authorization hardening closeout, the Slice 33 repository policy and selection UX closeout, the Slice 34 trust lifecycle management closeout, the Slice 35 laptop edge runtime closeout, the Slice 36 shared Rust message contracts closeout, the Slice 37 notes retrieval and context expansion closeout, the Slice 38 generic-job and non-repo execution closeout, and the Slice 39 Kubernetes deployment validation closeout.
+Slice set `0` through `40` is complete on the current Slice 40 branch, and slices `0` through `39` are complete on merged `main`, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, the Slice 31 chat-surface polish pass, the Slice 32 identity/authorization hardening closeout, the Slice 33 repository policy and selection UX closeout, the Slice 34 trust lifecycle management closeout, the Slice 35 laptop edge runtime closeout, the Slice 36 shared Rust message contracts closeout, the Slice 37 notes retrieval and context expansion closeout, the Slice 38 generic-job and non-repo execution closeout, the Slice 39 Kubernetes deployment validation closeout, and the Slice 40 CI workflow maintenance closeout.
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
@@ -1359,16 +1359,17 @@ Current delivered baseline:
 - an audited Kubernetes base aligned with the current post-Slice-38 stack
 - a validated local `kind` deployment path for the in-cluster orchestrator services
 - an explicit supported Kubernetes topology that excludes `elowen-edge` from the validated base and treats in-cluster edge manifests as experimental
+- hosted GitHub Actions image-publish workflows that now pass on current runners across the touched service repos
+- a hosted UI browser automation workflow that now matches the current UI contract instead of stale Slice 30/31 fixture assumptions
 
 True MVP critical path from here:
 - no remaining slice-level blockers
 
 Post-MVP slice plan from here:
-- `Slice 40 - CI Workflow Maintenance`
 - `Slice 41 - Edge Client Usability And Runtime UX`
 
 Immediate next deliverable:
-- start `Slice 40 - CI Workflow Maintenance`
+- start `Slice 41 - Edge Client Usability And Runtime UX`
 
 Slice 29 closeout:
 - selected thread, selected job, composer text, panel state, and transcript scroll now persist across background updates
@@ -1629,12 +1630,28 @@ Why this slice exists:
 ### Slice 40 - CI Workflow Maintenance
 
 Status:
-- planned
+- closed on branch
 
 Assigned scope:
 - refresh third-party GitHub Action versions in image-publish and related workflows
 - rerun and verify the image-publish path on the current GitHub-hosted runner platform
 - remove avoidable runtime deprecation noise from the release pipeline
+
+Delivered in this slice:
+- refreshed the Docker publish workflows in `elowen-api`, `elowen-notes`, and `elowen-ui` onto the current action majors that support the Node 24 GitHub Actions runtime transition
+- repaired the `elowen-api` hosted image build path by checking out `elowen-platform` alongside the service repo so the shared `elowen-contracts` crate is present during Docker builds
+- refreshed the `elowen-ui` browser automation workflow to current hosted-runner action majors
+- updated the Playwright fixture data and selectors in `elowen-ui` so the suite matches the current prompt-first draft UX and current details/manual-job panel behavior
+
+Validation and closeout:
+- local validation passed for the `elowen-api` hosted-build shape via `docker build -f elowen-api/Dockerfile .` from the workspace root
+- local validation passed in `elowen-ui` with `npm run test:e2e`
+- hosted workflow verification passed on 2026-04-23:
+- `elowen-api` Publish Container Image run `24864941322`
+- `elowen-notes` Publish Container Image run `24864941332`
+- `elowen-ui` Publish Container Image run `24864941319`
+- `elowen-ui` UI Browser Automation run `24864941323`
+- GitHub milestone issues `#8` and `#9` were closed after the hosted runs passed
 
 Why this slice exists:
 - this work is low priority compared with product slices, but it is still real outstanding maintenance work and now has an explicit place in the plan
