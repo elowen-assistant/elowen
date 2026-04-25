@@ -1335,17 +1335,18 @@ Definition of done:
 39. `Slice 38 - Tools And Integration Expansion`
 40. `Slice 39 - Kubernetes Deployment Validation`
 41. `Slice 40 - CI Workflow Maintenance`
+42. `Slice 41 - Edge Client Usability And Runtime UX`
 
 ---
 
 ## 20. Next Deliverable
 
-Slice set `0` through `40` is complete on the current Slice 40 branch, and slices `0` through `39` are complete on merged `main`, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, the Slice 31 chat-surface polish pass, the Slice 32 identity/authorization hardening closeout, the Slice 33 repository policy and selection UX closeout, the Slice 34 trust lifecycle management closeout, the Slice 35 laptop edge runtime closeout, the Slice 36 shared Rust message contracts closeout, the Slice 37 notes retrieval and context expansion closeout, the Slice 38 generic-job and non-repo execution closeout, the Slice 39 Kubernetes deployment validation closeout, and the Slice 40 CI workflow maintenance closeout.
+Slice set `0` through `41` is complete on the current Slice 41 branch, and slices `0` through `40` are complete on merged `main`, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, the Slice 31 chat-surface polish pass, the Slice 32 identity/authorization hardening closeout, the Slice 33 repository policy and selection UX closeout, the Slice 34 trust lifecycle management closeout, the Slice 35 laptop edge runtime closeout, the Slice 36 shared Rust message contracts closeout, the Slice 37 notes retrieval and context expansion closeout, the Slice 38 generic-job and non-repo execution closeout, the Slice 39 Kubernetes deployment validation closeout, the Slice 40 CI workflow maintenance closeout, and the Slice 41 edge client usability/runtime UX closeout.
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
 - VPS-hosted orchestrator deployment over HTTPS
-- standalone laptop edge runtime with env-file based startup and documented Windows launch/install helpers
+- standalone edge runtime with TOML configuration, local TUI diagnostics, Windows Task Scheduler support, and Linux systemd support
 - GHCR prebuilt images for VPS-hosted Rust services so the small VPS does not compile on deploy
 - real Codex CLI execution path with startup preflight and persisted runner artifacts
 - chat-driven job dispatch from a thread without relying on the separate manual job form
@@ -1361,15 +1362,16 @@ Current delivered baseline:
 - an explicit supported Kubernetes topology that excludes `elowen-edge` from the validated base and treats in-cluster edge manifests as experimental
 - hosted GitHub Actions image-publish workflows that now pass on current runners across the touched service repos
 - a hosted UI browser automation workflow that now matches the current UI contract instead of stale Slice 30/31 fixture assumptions
+- CI-built `elowen-edge` Windows and Linux executable artifacts for release-tag or manual workflow runs
 
 True MVP critical path from here:
 - no remaining slice-level blockers
 
 Post-MVP slice plan from here:
-- `Slice 41 - Edge Client Usability And Runtime UX`
+- no numbered follow-on slice is currently assigned after Slice 41
 
 Immediate next deliverable:
-- start `Slice 41 - Edge Client Usability And Runtime UX`
+- decide the next numbered post-MVP slice
 
 Slice 29 closeout:
 - selected thread, selected job, composer text, panel state, and transcript scroll now persist across background updates
@@ -1659,7 +1661,7 @@ Why this slice exists:
 ### Slice 41 - Edge Client Usability And Runtime UX
 
 Status:
-- planned
+- closed on branch
 
 Assigned scope:
 - operator-facing and installer-grade usability pass over the edge client setup flow
@@ -1667,6 +1669,27 @@ Assigned scope:
 - Windows-first Codex runtime discovery, validation, and remediation guidance instead of relying on ad hoc local path knowledge
 - better startup diagnostics and UI-visible explanations when the edge falls back to simulated execution
 - lower-friction tunnel, trust-key, and local runtime setup on first run
+
+Delivered in this slice:
+- `elowen-edge` now uses TOML-only runtime configuration through `elowen-edge run --config <path>`
+- legacy env files are supported only through one-time migration with `elowen-edge config import-env --env-file <path> --config <path>`
+- edge trust secrets now live in separate local files referenced from TOML, with Unix permission checks for secret files
+- the edge binary now includes a local TUI with dashboard, first-run checklist, config validation, service controls, diagnostics, arrow-key tab navigation, local-time status timestamps, and Codex command auto-discovery
+- the runtime writes local JSON status under the configured state directory for TUI and operator inspection
+- Windows helper scripts now launch the TOML runtime path through a hidden Task Scheduler launcher so the background edge does not leave an operator terminal open, and the edge includes Windows Task Scheduler plus Linux systemd service helpers
+- Windows packaging now produces an unsigned Inno Setup `ElowenEdgeSetup.exe` for the normal download-and-run operator flow, with the PowerShell bootstrap installer retained as a fallback
+- `elowen-edge` now has a Windows/Linux release-artifact workflow for cross-platform executable builds
+- local Compose edge configuration now uses a mounted TOML file instead of edge env variables
+
+Validation and closeout:
+- first automated validation passed in `elowen-edge`: `cargo fmt --check`, `cargo check`, `cargo test --quiet`, and `cargo clippy --all-targets -- -D warnings`
+- mandatory post-feature Rust refactor completed across the touched edge modules, including service-name propagation into local service status handling
+- second automated validation passed in `elowen-edge`: `cargo fmt --check`, `cargo check`, `cargo test --quiet`, `cargo clippy --all-targets -- -D warnings`, and `cargo doc --no-deps`
+- local manual UAT passed for CLI help, env-file import into TOML plus secret files, legacy `--env-file` runtime rejection, and trust key generation
+- local Windows bootstrap-installer UAT passed for install, scheduled-task registration/start, installed binary/config execution, secret-file copy, and TUI shortcut creation
+- local Windows Inno installer UAT passed for EXE compilation, silent install with config/secret inputs, scheduled-task registration/start through the hidden launcher, installed binary/config execution, Codex CLI preflight, NATS connection, trusted registration heartbeat, desktop shortcut creation, Start Menu shortcut creation, and uninstall-entry creation
+- full-stack redeploy UAT passed against `https://api.ericburden.dev/`, with the VPS orchestrator reachable and the installed Windows edge reporting `runner_mode = codex-cli`, `nats_status = connected`, and successful registration in local status JSON
+- Linux systemd live-service UAT remains pending operator-host execution
 
 Why this slice exists:
 - the edge can now register and advertise repositories, but the end-to-end operator experience is still too fragile, especially on Windows where a present `codex.exe` may still fail from a background edge process

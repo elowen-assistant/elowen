@@ -17,13 +17,13 @@ This folder is the umbrella workspace for Elowen, a personal cloud AI-assistant 
 
 ## Current State
 
-As of 2026-04-23, slices `0` through `40` are complete on this Slice 40 branch, with slices `0` through `39` complete on local `main`.
+As of 2026-04-25, slices `0` through `41` are complete on this Slice 41 branch, with slices `0` through `40` complete on local `main`.
 
 The shipped baseline includes:
 
 - a VPS-hosted orchestrator deployment over HTTPS
 - GHCR prebuilt images for the VPS-hosted API, notes service, and UI
-- a standalone Windows laptop edge runtime with env-file startup
+- a standalone edge runtime with TOML configuration, a local TUI, unsigned Inno Setup Windows installer packaging, hidden Windows Task Scheduler service launch, TUI shortcuts, and Linux systemd support
 - signed edge registration with pinned orchestrator trust
 - parent-directory repository discovery on the edge
 - real Codex CLI execution in per-job git worktrees
@@ -43,8 +43,9 @@ The shipped baseline includes:
 - refreshed GitHub Actions publish workflows that run cleanly on current hosted runners and no longer depend on the deprecated Node 20 action runtime path
 - a repaired `elowen-api` image publish path that checks out the shared `elowen-platform` contracts repo during hosted image builds
 - hosted Slice 40 verification runs passing for `elowen-api`, `elowen-notes`, and `elowen-ui` image publish plus the `elowen-ui` browser automation workflow
+- Slice 41 edge usability work adding TOML-only edge configuration, one-time env import, permission-checked local secret files, local status JSON, TUI diagnostics/service controls, Codex command auto-discovery, hidden Windows Task Scheduler launch, unsigned Inno Setup Windows installer packaging, and Windows/Linux executable artifact builds
 
-The next planned roadmap slice is `Slice 41 - Edge Client Usability And Runtime UX`.
+No next numbered roadmap slice is currently assigned after Slice 41.
 
 ## Clone
 
