@@ -17,7 +17,7 @@ This folder is the umbrella workspace for Elowen, a personal cloud AI-assistant 
 
 ## Current State
 
-As of 2026-04-25, slices `0` through `42` are complete on `main`.
+As of 2026-04-28, slices `0` through `43` are complete on `main`.
 
 The shipped baseline includes:
 
@@ -30,7 +30,7 @@ The shipped baseline includes:
 - read-only execution intent for informational repository requests
 - approval-backed commit and push execution for mutating jobs
 - a chat-first Leptos UI with web-session authentication
-- authenticated server-sent events for thread, job, and device updates, with explicit reconnect/backoff recovery and slower polling retained as a fallback
+- authenticated server-sent events for thread, job, device, and trust updates, with explicit reconnect/backoff recovery and targeted catch-up fetches instead of timer-driven browser polling
 - polished chat transcript/result surfaces and execution-draft handoff cards with local timestamp rendering and keyboard submit affordances
 - richer notes retrieval and ranking for promoted memory
 - stronger orchestrator-side note context assembly with direct thread/job memory prioritization and top-note detail expansion
@@ -45,8 +45,9 @@ The shipped baseline includes:
 - hosted Slice 40 verification runs passing for `elowen-api`, `elowen-notes`, and `elowen-ui` image publish plus the `elowen-ui` browser automation workflow
 - Slice 41 edge usability work adding TOML-only edge configuration, one-time env import, permission-checked local secret files, local status JSON, TUI diagnostics/service controls, Codex command auto-discovery, hidden Windows Task Scheduler launch, unsigned Inno Setup Windows installer packaging, and Windows/Linux executable artifact builds
 - Slice 42 trust lifecycle completion adding auditable trust events, orchestrator signer lifecycle metadata, admin trust actions, trust-aware dispatch blocking, edge/TUI trust diagnostics, and clean-stack validation of rotation, revocation, and recovery
+- Slice 43 realtime-only orchestrator UI work removing timer-driven browser polling, tightening authenticated SSE event envelopes and catch-up behavior, and making edge-unavailable jobs fail explicitly with an operator retry action
 
-The next planned roadmap slice is `Slice 43 - Realtime-Only Orchestrator UI`, followed by `Slice 44 - Secrets And Key Material Hardening`.
+The next planned roadmap slice is `Slice 44 - Secrets And Key Material Hardening`, followed by `Slice 45 - Admin-Driven Edge Enrollment Bootstrap`.
 
 ## Clone
 

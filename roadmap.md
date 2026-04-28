@@ -1339,12 +1339,13 @@ Definition of done:
 43. `Slice 42 - Trust Lifecycle Completion`
 44. `Slice 43 - Realtime-Only Orchestrator UI`
 45. `Slice 44 - Secrets And Key Material Hardening`
+46. `Slice 45 - Admin-Driven Edge Enrollment Bootstrap`
 
 ---
 
 ## 20. Next Deliverable
 
-Slice set `0` through `42` is complete on merged `main`, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, the Slice 31 chat-surface polish pass, the Slice 32 identity/authorization hardening closeout, the Slice 33 repository policy and selection UX closeout, the Slice 34 trust lifecycle management closeout, the Slice 35 laptop edge runtime closeout, the Slice 36 shared Rust message contracts closeout, the Slice 37 notes retrieval and context expansion closeout, the Slice 38 generic-job and non-repo execution closeout, the Slice 39 Kubernetes deployment validation closeout, the Slice 40 CI workflow maintenance closeout, the Slice 41 edge client usability/runtime UX closeout, and the Slice 42 trust lifecycle completion closeout.
+Slice set `0` through `43` is complete on merged `main`, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, the Slice 31 chat-surface polish pass, the Slice 32 identity/authorization hardening closeout, the Slice 33 repository policy and selection UX closeout, the Slice 34 trust lifecycle management closeout, the Slice 35 laptop edge runtime closeout, the Slice 36 shared Rust message contracts closeout, the Slice 37 notes retrieval and context expansion closeout, the Slice 38 generic-job and non-repo execution closeout, the Slice 39 Kubernetes deployment validation closeout, the Slice 40 CI workflow maintenance closeout, the Slice 41 edge client usability/runtime UX closeout, the Slice 42 trust lifecycle completion closeout, and the Slice 43 realtime-only orchestrator UI closeout.
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
@@ -1356,7 +1357,7 @@ Current delivered baseline:
 - persisted threads, messages, jobs, approvals, notes, and job events
 - signed edge registration, parent-directory repo discovery, probing, dispatch, worktree creation, lifecycle events, summaries, and validation reporting
 - authenticated web UI sessions
-- authenticated SSE notifications for thread, job, and device changes, with polling retained as a fallback
+- authenticated SSE notifications for thread, job, device, and trust changes, with reconnect/backoff recovery and targeted catch-up fetches instead of timer-driven browser polling
 - generic jobs with explicit repository-versus-capability targeting
 - prompt-first execution envelopes for both conversational drafts and dispatch
 - capability-routed non-repo execution that skips worktree, commit, and push flows
@@ -1367,16 +1368,18 @@ Current delivered baseline:
 - a hosted UI browser automation workflow that now matches the current UI contract instead of stale Slice 30/31 fixture assumptions
 - CI-built `elowen-edge` Windows and Linux executable artifacts for release-tag or manual workflow runs
 - auditable trust lifecycle state for edge devices, orchestrator signer metadata, admin trust actions, trust-aware dispatch blocking, and TUI-readable structured trust diagnostics
+- realtime-only orchestrator UI updates over authenticated SSE with targeted catch-up fetches and explicit degraded-state handling instead of timer-driven browser polling
+- edge-unavailable job handling that fails explicitly with `failure_class=edge_unavailable` and exposes an operator-driven retry action
 
 True MVP critical path from here:
 - no remaining slice-level blockers
 
 Post-MVP slice plan from here:
-- `Slice 43 - Realtime-Only Orchestrator UI`
 - `Slice 44 - Secrets And Key Material Hardening`
+- `Slice 45 - Admin-Driven Edge Enrollment Bootstrap`
 
 Immediate next deliverable:
-- start `Slice 43 - Realtime-Only Orchestrator UI`
+- start `Slice 44 - Secrets And Key Material Hardening`
 
 Slice 29 closeout:
 - selected thread, selected job, composer text, panel state, and transcript scroll now persist across background updates
@@ -1781,13 +1784,14 @@ Why this slice exists:
 ### Slice 43 - Realtime-Only Orchestrator UI
 
 Status:
-- planned
+- closed
 
 Assigned scope:
 - remove the remaining orchestrator UI polling fallback so thread, job, approval, device, note, repository, and trust updates flow through an authenticated asynchronous realtime channel plus explicit user-initiated fetches only
 - be thoughtful about allowing user interaction to drive data fetches while relying on asynchronous communication with Leptos islands for updates that originate from edge clients and attached services
 - tighten the API/UI contract around realtime delivery so stale state, reconnects, authorization failures, and revoked-device transitions are represented intentionally rather than hidden behind periodic polling
 - preserve edge heartbeats, explicit availability probes, and local edge status JSON; this slice removes browser-side timer polling, not service-side presence or probe behavior
+- make edge-unavailable jobs fail explicitly with a manual retry action instead of leaving them in a pending state forever; automatic requeueing is future work
 
 Task breakdown:
 
@@ -1802,6 +1806,7 @@ Task breakdown:
 - remove automatic timer-driven background polling from the normal UI path
 - make explicit refresh buttons or stale-state banners available where the operator needs agency after realtime disconnects
 - avoid refetching whole app state when a targeted resource fetch or event payload can update the relevant island
+- add a manual retry action for failed edge-unavailable jobs so operators can probe/dispatch again after an edge client returns
 
 3. Realtime-originated updates from edge and attached services
 - ensure edge-originated events, job lifecycle events, approvals, device heartbeats/registration changes, trust changes, note promotions, and attached-service updates all publish the realtime events expected by the UI
@@ -1821,11 +1826,23 @@ Out of scope:
 - replacing active device availability probes; probes remain explicit request/reply checks for job eligibility
 - implementing new trust lifecycle semantics beyond the Slice 42 model
 - provider-specific Gmail, Calendar, or Drive integrations
+- automatic rescheduling/requeueing of jobs when an edge later becomes available; Slice 43 keeps retry explicit and operator-driven
 
 Validation plan:
 - `elowen-api`: realtime event contract tests plus `cargo fmt --check`, `cargo check`, `cargo test --quiet`, `cargo clippy --all-targets -- -D warnings`, and `cargo doc --no-deps`
 - `elowen-ui`: `cargo fmt --check`, `cargo test`, `cargo clippy --all-targets -- -D warnings`, and browser automation proving realtime updates, user-driven fetches, and no timer-driven polling
 - manual UAT: create messages/jobs/approvals/notes/device trust changes from separate origins, confirm island-level updates arrive asynchronously; interrupt the realtime channel and confirm visible degraded state without silent polling; restore realtime and confirm catch-up behavior
+
+Closeout summary as of 2026-04-28:
+- `elowen-api` now publishes richer UI event envelopes with `event_id`, `resource_kind`, `resource_id`, and `action`, emits signer lifecycle realtime events, and routes edge-unavailable dispatch attempts into explicit failed jobs instead of indefinite pending state
+- `elowen-api` now supports `POST /api/v1/jobs/{job_id}/retry`, reconstructing the original dispatch attempt from job history, probing the edge again, and either dispatching or failing again with `edge_unavailable`
+- `elowen-ui` no longer uses timer-driven browser polling in the normal path; authenticated SSE plus reconnect/catch-up and user-initiated fetches now drive updates
+- `elowen-ui` shows an operator retry action for failed edge-unavailable jobs while keeping automatic requeueing out of scope as future work
+- docs now describe the realtime-only UI posture, the absence of silent polling fallback, and the edge-unavailable retry behavior
+- automated validation passed in `elowen-api`: `cargo fmt --check`, `cargo check`, `cargo test --quiet` with 24 tests, `cargo clippy --all-targets -- -D warnings`, and `cargo doc --no-deps`
+- automated validation passed in `elowen-ui`: `cargo fmt --check`, `cargo check`, `cargo test --quiet` with 13 tests, `cargo clippy --all-targets -- -D warnings`, `cargo doc --no-deps`, and `npm run test:e2e` with 14 browser tests
+- hands-on UAT passed in a clean local Compose stack: edge-offline jobs failed explicitly with `failure_class=edge_unavailable`, retry dispatched the same job after the edge returned, and a direct SSE smoke test received a live `thread.changed` event with the new envelope fields
+- UAT follow-up: clean Compose edge trust bootstrap still needs a first-class dev/prod enrollment story; Slice 45 now owns admin-driven edge enrollment bootstrap, while Slice 44 remains focused on secrets and key material hardening
 
 Why this slice exists:
 - The UI has carried polling as a safety net since the realtime system was young. Browser automation and authenticated realtime delivery are now mature enough that keeping polling in the normal path creates duplicate state machinery, masks realtime failures, and makes edge/service-originated updates harder to reason about.
@@ -1888,3 +1905,71 @@ Out of scope:
 
 Why this slice exists:
 - Slice 41 and Slice 42 intentionally used local secret files as the practical self-hosted baseline. Clean-stack UAT showed that this is workable but not the final security posture, especially across Windows hosts, Linux containers, VPS deployments, and operator recovery flows.
+
+### Slice 45 - Admin-Driven Edge Enrollment Bootstrap
+
+Status:
+- planned
+
+Assigned scope:
+- make first-time edge enrollment an explicit admin-approved workflow instead of relying on implicit first-key trust
+- keep the Slice 42 trust lifecycle model authoritative after enrollment: rotation still requires previous-key proof plus admin confirmation, revocation still blocks dispatch and registration, and TUI diagnostics still explain local trust failures
+- support the normal Windows operator flow: download installer, run installer, complete enrollment, and start the persistent edge service without hand-editing database rows or TOML secrets
+- keep local Compose/dev bootstrap convenient, but clearly separate dev-only seeding from production enrollment grants
+
+Target workflow:
+
+1. Admin opens the orchestrator UI and chooses **Add edge device**.
+2. Orchestrator creates a pending enrollment grant for a specific device identity.
+3. The UI provides a downloadable installer/config bundle or a one-time enrollment code.
+4. The Windows installer or edge TUI consumes that bundle, generates or installs the edge key, pins the orchestrator signer bundle, and starts the service.
+5. The edge registers using the enrollment grant plus its signed key proof.
+6. The orchestrator records the device as trusted, emits audit events, and invalidates the grant.
+7. Any later key change uses the Slice 42 rotation-confirmation path.
+
+Task breakdown:
+
+1. Enrollment grant model
+- add a pending enrollment record with device id, display name, expected capabilities/repository exposure, expiration, single-use status, actor metadata, and audit history
+- decide whether grants bind to a pre-generated edge public key, a one-time enrollment secret, or both
+- reject expired, reused, revoked, or mismatched enrollment attempts with structured error codes
+- keep enrollment grants separate from long-lived trust state so revocation and rotation remain auditable lifecycle actions
+
+2. Orchestrator API and admin UI
+- add admin endpoints to create, inspect, revoke, and consume enrollment grants
+- add an **Add edge device** UI flow that explains whether the operator is enrolling a new edge, rotating an existing edge key, or recovering a revoked identity
+- show pending, expired, consumed, and revoked enrollment grants in the device trust/admin surface
+- include dispatch eligibility messaging that distinguishes “not enrolled yet” from “registered but blocked by trust state”
+
+3. Installer, TUI, and config bundle support
+- support a downloadable enrollment bundle containing API URL, device identity, public orchestrator trust bundle, and the one-time enrollment material
+- update the Windows installer/TUI path to import the bundle, generate or store edge key material through the Slice 44 secret backend, write TOML config, install/start the service, and report registration progress
+- add Linux/VPS enrollment instructions for consuming the same bundle or one-time code from the TUI/CLI
+- ensure the TUI shows enrollment progress and recovery actions without displaying private key material or long-lived secrets
+
+4. Dev and Compose bootstrap
+- add a dev-only clean-stack bootstrap path that provisions a local trusted edge without manual Postgres edits
+- mark dev bootstrap material and broad-permission overrides as non-production in diagnostics and docs
+- keep production examples on the admin-grant flow rather than auto-trusting arbitrary first registrations
+
+5. Security and recovery rules
+- preserve public-key fingerprints/key ids in UI/TUI while hiding private material and one-time enrollment secrets after creation
+- log all grant creation, consumption, expiration, revocation, and failed enrollment attempts
+- define recovery runbooks for lost installer bundle, expired enrollment code, duplicate device id, wrong edge key, revoked device, and second-edge enrollment
+- ensure the registration endpoint cannot silently trust a new production device without a valid active enrollment grant when trusted registration is required
+
+Validation plan:
+- `elowen-api`: grant migration tests, single-use/expiration tests, registration authorization tests, structured error-code tests, audit-event tests, and full Rust validation
+- `elowen-ui`: admin enrollment flow tests, pending/expired/consumed grant rendering tests, and dispatch eligibility messaging tests
+- `elowen-edge`: TUI/import tests for enrollment bundles, registration error classification tests, installer-flow smoke tests where practical, and full Rust validation if edge code changes
+- `elowen-platform`: Compose clean-stack bootstrap validation plus production docs for Windows, Linux/VPS, and containerized enrollment
+- manual UAT: clean Compose trusted-edge bootstrap without DB edits; Windows installer enrollment from a fresh orchestrator grant; expired/reused grant rejection; second-edge enrollment; rotation after enrollment; revocation and recovery
+
+Out of scope:
+- replacing the Slice 42 rotation/revocation lifecycle
+- enterprise device inventory integration
+- organization-wide policy approval workflows
+- automatic job requeueing, which remains future work after Slice 43 explicit retry
+
+Why this slice exists:
+- Slice 42 made the orchestrator authoritative for device trust, and Slice 43 UAT exposed that clean-stack dispatch testing still depends on a trusted-edge bootstrap. The production version of that problem is first enrollment: users need a clear admin-approved path from installer download to trusted registration, without hand-editing trust files or database state.
