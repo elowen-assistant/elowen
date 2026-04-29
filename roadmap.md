@@ -1345,7 +1345,7 @@ Definition of done:
 
 ## 20. Next Deliverable
 
-Slice set `0` through `43` is complete on merged `main`, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, the Slice 31 chat-surface polish pass, the Slice 32 identity/authorization hardening closeout, the Slice 33 repository policy and selection UX closeout, the Slice 34 trust lifecycle management closeout, the Slice 35 laptop edge runtime closeout, the Slice 36 shared Rust message contracts closeout, the Slice 37 notes retrieval and context expansion closeout, the Slice 38 generic-job and non-repo execution closeout, the Slice 39 Kubernetes deployment validation closeout, the Slice 40 CI workflow maintenance closeout, the Slice 41 edge client usability/runtime UX closeout, the Slice 42 trust lifecycle completion closeout, and the Slice 43 realtime-only orchestrator UI closeout.
+Slice set `0` through `44` is complete on merged `main`, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, the Slice 31 chat-surface polish pass, the Slice 32 identity/authorization hardening closeout, the Slice 33 repository policy and selection UX closeout, the Slice 34 trust lifecycle management closeout, the Slice 35 laptop edge runtime closeout, the Slice 36 shared Rust message contracts closeout, the Slice 37 notes retrieval and context expansion closeout, the Slice 38 generic-job and non-repo execution closeout, the Slice 39 Kubernetes deployment validation closeout, the Slice 40 CI workflow maintenance closeout, the Slice 41 edge client usability/runtime UX closeout, the Slice 42 trust lifecycle completion closeout, the Slice 43 realtime-only orchestrator UI closeout, and the Slice 44 secrets/key-material hardening closeout.
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
@@ -1370,16 +1370,16 @@ Current delivered baseline:
 - auditable trust lifecycle state for edge devices, orchestrator signer metadata, admin trust actions, trust-aware dispatch blocking, and TUI-readable structured trust diagnostics
 - realtime-only orchestrator UI updates over authenticated SSE with targeted catch-up fetches and explicit degraded-state handling instead of timer-driven browser polling
 - edge-unavailable job handling that fails explicitly with `failure_class=edge_unavailable` and exposes an operator-driven retry action
+- hardened edge/orchestrator key-material handling with provider-backed edge signing keys, Windows DPAPI protected local storage, mounted orchestrator signer files, plaintext compatibility diagnostics, and documented secret-mount paths for Compose, VPS, and Kubernetes
 
 True MVP critical path from here:
 - no remaining slice-level blockers
 
 Post-MVP slice plan from here:
-- `Slice 44 - Secrets And Key Material Hardening`
 - `Slice 45 - Admin-Driven Edge Enrollment Bootstrap`
 
 Immediate next deliverable:
-- start `Slice 44 - Secrets And Key Material Hardening`
+- start `Slice 45 - Admin-Driven Edge Enrollment Bootstrap`
 
 Slice 29 closeout:
 - selected thread, selected job, composer text, panel state, and transcript scroll now persist across background updates
@@ -1850,7 +1850,7 @@ Why this slice exists:
 ### Slice 44 - Secrets And Key Material Hardening
 
 Status:
-- planned
+- complete on merged `main`
 
 Assigned scope:
 - move beyond plaintext local secret files as the long-term edge/orchestrator key-material posture while preserving the Slice 41/42 TOML path-based setup as a migration-compatible baseline
@@ -1905,6 +1905,14 @@ Out of scope:
 
 Why this slice exists:
 - Slice 41 and Slice 42 intentionally used local secret files as the practical self-hosted baseline. Clean-stack UAT showed that this is workable but not the final security posture, especially across Windows hosts, Linux containers, VPS deployments, and operator recovery flows.
+
+Closeout:
+- `elowen-edge` added provider-backed edge signing-key references for current and previous keys, preserved legacy file-path compatibility, implemented a Windows DPAPI protected-file backend, added `trust import-key --from PATH --to PATH --provider file|dpapi`, and updated TUI readiness/diagnostics so operators see backend state without private material
+- `elowen-api` now loads orchestrator signer private keys from `ELOWEN_ORCHESTRATOR_SIGNING_KEY_FILE` and `ELOWEN_ORCHESTRATOR_SIGNING_KEY_FILES` in addition to the existing env-var compatibility path, while signer lifecycle state remains public metadata only
+- `elowen-platform` documents Compose, VPS, Kubernetes, Windows, Linux, and container secret-mount/operator patterns, including the production distinction between private signer/key material and public trust bundles
+- automated validation passed twice around the mandatory refactor phase: full `elowen-edge` Rust suite, full `elowen-api` Rust suite, and `docker compose -f compose/docker-compose.vps.yml config`
+- manual UAT passed for Windows DPAPI import and registration, file-provider registration, container file-provider permission rejection and `chmod 600` success, signer-file lifecycle activation/retirement, stale trust-bundle rejection, rotation confirmation, revocation blocking, fresh-key recovery, and interactive TUI inspection after migrating the installed Windows edge key to DPAPI
+- known gap: Linux/VPS host-level systemd service UAT still requires a target VPS host; Slice 44 does not claim fresh host-level systemd validation beyond docs and container/file-provider validation
 
 ### Slice 45 - Admin-Driven Edge Enrollment Bootstrap
 

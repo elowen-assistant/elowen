@@ -17,7 +17,7 @@ This folder is the umbrella workspace for Elowen, a personal cloud AI-assistant 
 
 ## Current State
 
-As of 2026-04-28, slices `0` through `43` are complete on `main`.
+As of 2026-04-29, slices `0` through `44` are complete on `main`.
 
 The shipped baseline includes:
 
@@ -46,8 +46,9 @@ The shipped baseline includes:
 - Slice 41 edge usability work adding TOML-only edge configuration, one-time env import, permission-checked local secret files, local status JSON, TUI diagnostics/service controls, Codex command auto-discovery, hidden Windows Task Scheduler launch, unsigned Inno Setup Windows installer packaging, and Windows/Linux executable artifact builds
 - Slice 42 trust lifecycle completion adding auditable trust events, orchestrator signer lifecycle metadata, admin trust actions, trust-aware dispatch blocking, edge/TUI trust diagnostics, and clean-stack validation of rotation, revocation, and recovery
 - Slice 43 realtime-only orchestrator UI work removing timer-driven browser polling, tightening authenticated SSE event envelopes and catch-up behavior, and making edge-unavailable jobs fail explicitly with an operator retry action
+- Slice 44 secrets and key-material hardening adding provider-backed edge key storage with Windows DPAPI support, mounted orchestrator signer files, secret-backend TUI diagnostics, migration tooling, and Compose/VPS/Kubernetes secret-mount documentation
 
-The next planned roadmap slice is `Slice 44 - Secrets And Key Material Hardening`, followed by `Slice 45 - Admin-Driven Edge Enrollment Bootstrap`.
+The next planned roadmap slice is `Slice 45 - Admin-Driven Edge Enrollment Bootstrap`.
 
 ## Clone
 
